@@ -1,0 +1,65 @@
+@import url('https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Space+Grotesk:wght@500;700;800&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --pop-cream: #FFFDF7;
+  --pop-yellow: #FDE047;
+  --pop-orange: #FB923C;
+  --pop-blue: #93C5FD;
+  --pop-green: #86EFAC;
+  --pop-pink: #F472B6;
+  --pop-purple: #C084FC;
+  --pop-dark: #18181B;
+}
+
+body {
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  background-color: var(--pop-cream);
+  color: var(--pop-dark);
+  -webkit-font-smoothing: antialiased;
+}
+
+h1, h2, h3, .font-display {
+  font-family: 'Space Grotesk', sans-serif;
+}
+
+.font-comic {
+  font-family: 'Fredoka', cursive, sans-serif;
+}
+
+/* Custom Neo-Brutalism Utilities */
+.neo-box {
+  border: 3px solid #000;
+  box-shadow: 4px 4px 0px 0px #000;
+  transition: all 0.15s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.neo-box:hover {
+  transform: translate(2px, 2px);
+  box-shadow: 2px 2px 0px 0px #000;
+}
+
+.neo-box-active:active {
+  transform: translate(4px, 4px);
+  box-shadow: 0px 0px 0px 0px #000;
+}
+
+.neo-box-static {
+  border: 3px solid #000;
+  box-shadow: 4px 4px 0px 0px #000;
+}
+
+.neo-box-lg {
+  border: 4px solid #000;
+  box-shadow: 6px 6px 0px 0px #000;
+}
+
+/* Halftone Comic Pattern background */
+.bg-halftone {
+  background-image: radial-gradient(#000000 1px, transparent 1px);
+  background-size: 16px 16px;
+  background-position: 0 0;
+}
