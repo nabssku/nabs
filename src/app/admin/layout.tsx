@@ -1,18 +1,50 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { usePathname, useRouter } from 'next/navigation';
-import { LayoutDashboard, FolderGit2, Sparkles, GraduationCap, MessageSquare, LogOut, ArrowUpRight, Menu, X } from 'lucide-react';
+import { LayoutDashboard, FolderGit2, Sparkles, GraduationCap, MessageSquare, LogOut, ArrowUpRight, Menu, X, Loader2 } from 'lucide-react';
 
 export default function AdminLayout({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
   const router = useRouter();
   const [mobileOpen, setMobileOpen] = useState(false);
+  const [isVerifying, setIsVerifying] = useState(pathname !== '/admin/login');
+
+  useEffect(() => {
+    if (pathname === '/admin/login') {
+      setIsVerifying(false);
+      return;
+    }
+
+    // Verify session
+    fetch('/api/auth/me')
+      .then((res) => {
+        if (!res.ok) {
+          router.replace('/');
+        } else {
+          setIsVerifying(false);
+        }
+      })
+      .catch(() => {
+        router.replace('/');
+      });
+  }, [pathname, router]);
 
   // If on login page, don't show admin sidebar
   if (pathname === '/admin/login') {
     return <>{children}</>;
+  }
+
+  if (isVerifying) {
+    return (
+      <div className="min-h-screen bg-pop-cream flex items-center justify-center">
+        <div className="p-6 bg-white border-[3px] border-black rounded-3xl shadow-pop flex items-center gap-3 font-display font-bold text-sm">
+          <Loader2 className="w-5 h-5 animate-spin text-pop-orange" />
+          <span>Memverifikasi Akses Admin...</span>
+        </div>
+      </div>
+    );
   }
 
   const navItems = [
@@ -24,9 +56,9 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
   ];
 
   const handleLogout = async () => {
-    // Clear cookies & redirect
+    // Clear cookies & redirect to landing page
     document.cookie = 'admin_session=; path=/; expires=Thu, 01 Jan 1970 00:00:01 GMT;';
-    router.push('/admin/login');
+    router.push('/');
   };
 
   return (
@@ -97,7 +129,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
             target="_blank"
             className="flex items-center justify-between px-3.5 py-2.5 bg-white border-[2px] border-black rounded-2xl font-display font-bold text-xs text-slate-800 shadow-pop-sm hover:bg-pop-cream transition"
           >
-            <span>Live Portfolio</span>
+            <span>Lihat Website</span>
             <ArrowUpRight className="w-4 h-4" />
           </Link>
 

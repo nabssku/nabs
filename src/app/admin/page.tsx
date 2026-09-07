@@ -3,23 +3,31 @@
 import React, { useEffect, useState } from 'react';
 import { LayoutDashboard, FolderGit2, Sparkles, GraduationCap, MessageSquare, Plus, ArrowUpRight, Loader2 } from 'lucide-react';
 import Link from 'next/link';
+import { useRouter } from 'next/navigation';
 
 export default function AdminOverviewPage() {
+  const router = useRouter();
   const [stats, setStats] = useState<any>(null);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     fetch('/api/admin/stats')
-      .then((res) => res.json())
+      .then((res) => {
+        if (res.status === 401) {
+          router.replace('/');
+          return;
+        }
+        return res.json();
+      })
       .then((data) => {
-        setStats(data);
+        if (data) setStats(data);
         setLoading(false);
       })
       .catch((err) => {
         console.error(err);
         setLoading(false);
       });
-  }, []);
+  }, [router]);
 
   if (loading) {
     return (

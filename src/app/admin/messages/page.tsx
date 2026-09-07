@@ -2,18 +2,29 @@
 
 import React, { useState, useEffect } from 'react';
 import { MessageSquare, Trash2, CheckCircle2, Mail, Calendar, Loader2 } from 'lucide-react';
+import { useRouter } from 'next/navigation';
 
 export default function AdminMessagesPage() {
+  const router = useRouter();
   const [messages, setMessages] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
 
   const fetchMessages = async () => {
     try {
       const res = await fetch('/api/admin/messages');
+      if (res.status === 401) {
+        router.replace('/');
+        return;
+      }
       const data = await res.json();
-      setMessages(data);
+      if (Array.isArray(data)) {
+        setMessages(data);
+      } else {
+        setMessages([]);
+      }
     } catch (err) {
       console.error(err);
+      setMessages([]);
     } finally {
       setLoading(false);
     }
@@ -25,11 +36,15 @@ export default function AdminMessagesPage() {
 
   const markAsRead = async (id: string, isRead: boolean) => {
     try {
-      await fetch(`/api/admin/messages?id=${id}`, {
+      const res = await fetch(`/api/admin/messages?id=${id}`, {
         method: 'PATCH',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ is_read: isRead }),
       });
+      if (res.status === 401) {
+        router.replace('/');
+        return;
+      }
       fetchMessages();
     } catch (err) {
       console.error(err);
@@ -39,12 +54,18 @@ export default function AdminMessagesPage() {
   const handleDelete = async (id: string) => {
     if (!confirm('Hapus pesan ini?')) return;
     try {
-      await fetch(`/api/admin/messages?id=${id}`, { method: 'DELETE' });
+      const res = await fetch(`/api/admin/messages?id=${id}`, { method: 'DELETE' });
+      if (res.status === 401) {
+        router.replace('/');
+        return;
+      }
       fetchMessages();
     } catch (err) {
       console.error(err);
     }
   };
+
+  const safeMessages = Array.isArray(messages) ? messages : [];
 
   return (
     <div className="space-y-8">
@@ -65,13 +86,13 @@ export default function AdminMessagesPage() {
         <div className="flex items-center justify-center py-20">
           <Loader2 className="w-8 h-8 animate-spin text-black" />
         </div>
-      ) : messages.length === 0 ? (
+      ) : safeMessages.length === 0 ? (
         <div className="text-center py-16 bg-white border-[3px] border-black rounded-3xl shadow-pop text-slate-400 font-bold text-sm">
           Kotak masuk masih kosong.
         </div>
       ) : (
         <div className="space-y-4">
-          {messages.map((msg) => (
+          {safeMessages.map((msg) => (
             <div
               key={msg.id}
               className={`border-[3px] border-black rounded-3xl p-6 shadow-pop transition flex flex-col sm:flex-row sm:items-start justify-between gap-4 ${

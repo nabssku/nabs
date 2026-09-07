@@ -2,91 +2,102 @@
 
 import React, { useState } from 'react';
 import Link from 'next/link';
-import { Sparkles, Menu, X, Terminal, ExternalLink, Shield } from 'lucide-react';
+import { Sparkles, Menu, X, Coffee } from 'lucide-react';
 
 export default function Navbar() {
-  const [mobileOpen, setMobileOpen] = useState(false);
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+
+  const navLinks = [
+    { label: 'About', href: '#about' },
+    { label: 'Experience', href: '#experience' },
+    { label: 'Projects', href: '#projects' },
+    { label: 'Skills', href: '#skills' },
+    { label: 'Contact', href: '#contact' },
+  ];
 
   return (
-    <nav className="sticky top-0 z-50 bg-pop-cream/90 backdrop-blur-md border-b-[3px] border-black px-4 sm:px-8 py-3">
-      <div className="max-w-6xl mx-auto flex items-center justify-between">
+    <header className="sticky top-0 z-40 bg-pop-cream/90 backdrop-blur-md border-b-[3px] border-black">
+      <div className="max-w-6xl mx-auto px-4 sm:px-8 h-20 flex items-center justify-between">
+        
         {/* Brand Logo Sticker */}
-        <Link href="/" className="flex items-center gap-2 group cursor-pointer">
-          <div className="w-10 h-10 bg-pop-yellow border-[3px] border-black rounded-xl flex items-center justify-center font-display font-extrabold text-lg shadow-pop-sm group-hover:rotate-6 transition-transform">
+        <Link href="/" className="flex items-center gap-2.5 group">
+          <div className="w-10 h-10 bg-pop-yellow border-[3px] border-black rounded-2xl flex items-center justify-center font-display font-black text-xl shadow-pop group-hover:rotate-6 group-hover:scale-105 transition">
             N
           </div>
           <div className="flex flex-col">
-            <span className="font-display font-extrabold text-lg tracking-tight flex items-center gap-1">
+            <span className="font-display font-black text-xl tracking-tight text-pop-dark group-hover:text-pop-orange transition">
               nabssku<span className="text-pop-orange">.dev</span>
             </span>
-            <span className="text-[10px] font-bold text-slate-500 -mt-1 tracking-wider uppercase">
-              Full-Stack Developer
+            <span className="text-[10px] font-bold text-slate-500 uppercase tracking-widest">
+              Software Engineer
             </span>
           </div>
         </Link>
 
-        {/* Desktop Links */}
-        <div className="hidden md:flex items-center gap-6 font-bold text-sm">
-          <a href="#about" className="hover:text-pop-orange transition">About</a>
-          <a href="#projects" className="hover:text-pop-orange transition">Projects</a>
-          <a href="#skills" className="hover:text-pop-orange transition">Tech Stack</a>
-          <a href="#experience" className="hover:text-pop-orange transition">Roadmap</a>
-          <a href="#contact" className="hover:text-pop-orange transition">Contact</a>
-        </div>
+        {/* Desktop Navigation Links */}
+        <nav className="hidden md:flex items-center gap-1.5">
+          {navLinks.map((link) => (
+            <a
+              key={link.href}
+              href={link.href}
+              className="px-3.5 py-1.5 font-display font-bold text-xs uppercase tracking-wider text-slate-700 hover:text-black hover:bg-pop-yellow/40 rounded-xl transition cursor-pointer"
+            >
+              {link.label}
+            </a>
+          ))}
+        </nav>
 
-        {/* Action Buttons */}
+        {/* Right CTA */}
         <div className="hidden md:flex items-center gap-3">
-          <Link
-            href="/admin"
-            className="px-3 py-1.5 bg-white border-[2px] border-black rounded-xl font-bold text-xs shadow-pop-sm hover:bg-slate-100 transition flex items-center gap-1.5"
-          >
-            <Shield className="w-3.5 h-3.5 text-pop-purple" />
-            <span>Admin CMS</span>
-          </Link>
           <a
             href="#contact"
-            className="px-4 py-2 bg-pop-yellow border-[3px] border-black rounded-xl font-display font-bold text-sm shadow-pop hover:translate-x-[2px] hover:translate-y-[2px] hover:shadow-pop-sm transition active:shadow-none flex items-center gap-1.5 cursor-pointer"
+            className="px-4 py-2 bg-pop-orange text-black border-[2px] border-black rounded-xl font-display font-bold text-xs shadow-pop-sm hover:translate-x-[1px] hover:translate-y-[1px] transition flex items-center gap-1.5 cursor-pointer"
           >
-            <Sparkles className="w-4 h-4 text-black" />
-            <span>Hire Me!</span>
+            <Coffee className="w-4 h-4" />
+            <span>Hire Me</span>
           </a>
         </div>
 
-        {/* Mobile Toggle */}
-        <button
-          onClick={() => setMobileOpen(!mobileOpen)}
-          className="md:hidden p-2 bg-white border-[2px] border-black rounded-xl shadow-pop-sm cursor-pointer"
-        >
-          {mobileOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
-        </button>
+        {/* Mobile Hamburger Button */}
+        <div className="md:hidden flex items-center gap-2">
+          <button
+            onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+            className="p-2 bg-pop-yellow border-[2px] border-black rounded-xl shadow-pop-sm"
+          >
+            {mobileMenuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
+          </button>
+        </div>
+
       </div>
 
-      {/* Mobile Drawer */}
-      {mobileOpen && (
-        <div className="md:hidden mt-3 p-4 bg-white border-[3px] border-black rounded-2xl shadow-pop flex flex-col gap-3 font-bold text-sm animate-in fade-in slide-in-from-top-2">
-          <a onClick={() => setMobileOpen(false)} href="#about" className="p-2 hover:bg-pop-yellow/30 rounded-lg">About Me</a>
-          <a onClick={() => setMobileOpen(false)} href="#projects" className="p-2 hover:bg-pop-yellow/30 rounded-lg">Showcase Projects</a>
-          <a onClick={() => setMobileOpen(false)} href="#skills" className="p-2 hover:bg-pop-yellow/30 rounded-lg">Skills & Stack</a>
-          <a onClick={() => setMobileOpen(false)} href="#experience" className="p-2 hover:bg-pop-yellow/30 rounded-lg">Experience Timeline</a>
-          <a onClick={() => setMobileOpen(false)} href="#contact" className="p-2 hover:bg-pop-yellow/30 rounded-lg">Contact Form</a>
-          <hr className="border-black" />
-          <div className="flex gap-2">
-            <Link
-              href="/admin"
-              className="flex-1 py-2 text-center bg-slate-100 border-[2px] border-black rounded-xl text-xs"
-            >
-              CMS Admin
-            </Link>
+      {/* Mobile Menu Dropdown */}
+      {mobileMenuOpen && (
+        <div className="md:hidden border-t-[2px] border-black bg-white p-4 space-y-3">
+          <div className="flex flex-col space-y-2">
+            {navLinks.map((link) => (
+              <a
+                key={link.href}
+                href={link.href}
+                onClick={() => setMobileMenuOpen(false)}
+                className="px-3 py-2 font-display font-bold text-sm text-slate-800 hover:bg-pop-cream rounded-xl border border-transparent hover:border-black transition"
+              >
+                {link.label}
+              </a>
+            ))}
+          </div>
+
+          <div className="pt-2 border-t border-slate-100">
             <a
               href="#contact"
-              onClick={() => setMobileOpen(false)}
-              className="flex-1 py-2 text-center bg-pop-yellow border-[2px] border-black rounded-xl text-xs font-bold shadow-pop-sm"
+              onClick={() => setMobileMenuOpen(false)}
+              className="w-full py-2.5 bg-pop-orange text-black border-[2px] border-black rounded-xl font-display font-bold text-xs shadow-pop-sm flex items-center justify-center gap-1.5"
             >
-              Hire Me!
+              <Coffee className="w-4 h-4" />
+              <span>Hire Me</span>
             </a>
           </div>
         </div>
       )}
-    </nav>
+    </header>
   );
 }

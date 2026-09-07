@@ -2,8 +2,10 @@
 
 import React, { useState, useEffect } from 'react';
 import { Plus, Trash2, GraduationCap, Briefcase, X, Check, Loader2 } from 'lucide-react';
+import { useRouter } from 'next/navigation';
 
 export default function AdminExperiencesPage() {
+  const router = useRouter();
   const [experiences, setExperiences] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const [modalOpen, setModalOpen] = useState(false);
@@ -21,10 +23,19 @@ export default function AdminExperiencesPage() {
   const fetchExperiences = async () => {
     try {
       const res = await fetch('/api/admin/experiences');
+      if (res.status === 401) {
+        router.replace('/');
+        return;
+      }
       const data = await res.json();
-      setExperiences(data);
+      if (Array.isArray(data)) {
+        setExperiences(data);
+      } else {
+        setExperiences([]);
+      }
     } catch (err) {
       console.error(err);
+      setExperiences([]);
     } finally {
       setLoading(false);
     }
@@ -38,7 +49,7 @@ export default function AdminExperiencesPage() {
     e.preventDefault();
     setSaving(true);
     try {
-      await fetch('/api/admin/experiences', {
+      const res = await fetch('/api/admin/experiences', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
@@ -52,6 +63,10 @@ export default function AdminExperiencesPage() {
           sort_order: Number(sortOrder),
         }),
       });
+      if (res.status === 401) {
+        router.replace('/');
+        return;
+      }
       setTitle('');
       setInstitution('');
       setLocation('');
@@ -69,12 +84,18 @@ export default function AdminExperiencesPage() {
   const handleDelete = async (id: string) => {
     if (!confirm('Hapus riwayat ini?')) return;
     try {
-      await fetch(`/api/admin/experiences?id=${id}`, { method: 'DELETE' });
+      const res = await fetch(`/api/admin/experiences?id=${id}`, { method: 'DELETE' });
+      if (res.status === 401) {
+        router.replace('/');
+        return;
+      }
       fetchExperiences();
     } catch (err) {
       console.error(err);
     }
   };
+
+  const safeExperiences = Array.isArray(experiences) ? experiences : [];
 
   return (
     <div className="space-y-8">
@@ -103,13 +124,13 @@ export default function AdminExperiencesPage() {
         <div className="flex items-center justify-center py-20">
           <Loader2 className="w-8 h-8 animate-spin text-black" />
         </div>
-      ) : experiences.length === 0 ? (
+      ) : safeExperiences.length === 0 ? (
         <div className="text-center py-16 bg-white border-[3px] border-black rounded-3xl shadow-pop text-slate-400 font-bold text-sm">
           Belum ada data timeline.
         </div>
       ) : (
         <div className="space-y-4">
-          {experiences.map((item) => (
+          {safeExperiences.map((item) => (
             <div
               key={item.id}
               className="bg-white border-[3px] border-black rounded-3xl p-6 shadow-pop flex flex-col sm:flex-row sm:items-center justify-between gap-4"

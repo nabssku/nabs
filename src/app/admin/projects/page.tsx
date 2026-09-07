@@ -2,8 +2,10 @@
 
 import React, { useState, useEffect, useRef } from 'react';
 import { Plus, Edit2, Trash2, ExternalLink, Github, Check, X, Loader2, Image as ImageIcon, UploadCloud } from 'lucide-react';
+import { useRouter } from 'next/navigation';
 
 export default function AdminProjectsPage() {
+  const router = useRouter();
   const [projects, setProjects] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const [modalOpen, setModalOpen] = useState(false);
@@ -29,10 +31,19 @@ export default function AdminProjectsPage() {
   const fetchProjects = async () => {
     try {
       const res = await fetch('/api/admin/projects');
+      if (res.status === 401) {
+        router.replace('/');
+        return;
+      }
       const data = await res.json();
-      setProjects(data);
+      if (Array.isArray(data)) {
+        setProjects(data);
+      } else {
+        setProjects([]);
+      }
     } catch (err) {
       console.error(err);
+      setProjects([]);
     } finally {
       setLoading(false);
     }
@@ -96,6 +107,11 @@ export default function AdminProjectsPage() {
         body: formData,
       });
 
+      if (res.status === 401) {
+        router.replace('/');
+        return;
+      }
+
       const data = await res.json();
       if (!res.ok) throw new Error(data.error || 'Upload gagal');
 
@@ -128,18 +144,24 @@ export default function AdminProjectsPage() {
         sort_order: Number(sortOrder),
       };
 
+      let res;
       if (editingProject) {
-        await fetch(`/api/admin/projects/${editingProject.id}`, {
+        res = await fetch(`/api/admin/projects/${editingProject.id}`, {
           method: 'PUT',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify(payload),
         });
       } else {
-        await fetch('/api/admin/projects', {
+        res = await fetch('/api/admin/projects', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify(payload),
         });
+      }
+
+      if (res.status === 401) {
+        router.replace('/');
+        return;
       }
 
       setModalOpen(false);
@@ -155,13 +177,19 @@ export default function AdminProjectsPage() {
   const handleDelete = async (id: string) => {
     if (!confirm('Yakin ingin menghapus project ini beserta aset medianya?')) return;
     try {
-      await fetch(`/api/admin/projects/${id}`, { method: 'DELETE' });
+      const res = await fetch(`/api/admin/projects/${id}`, { method: 'DELETE' });
+      if (res.status === 401) {
+        router.replace('/');
+        return;
+      }
       fetchProjects();
     } catch (err) {
       console.error(err);
       alert('Gagal menghapus');
     }
   };
+
+  const safeProjects = Array.isArray(projects) ? projects : [];
 
   return (
     <div className="space-y-8">
@@ -190,13 +218,13 @@ export default function AdminProjectsPage() {
         <div className="flex items-center justify-center py-20">
           <Loader2 className="w-8 h-8 animate-spin text-black" />
         </div>
-      ) : projects.length === 0 ? (
+      ) : safeProjects.length === 0 ? (
         <div className="text-center py-16 bg-white border-[3px] border-black rounded-3xl shadow-pop text-slate-400 font-bold text-sm">
           Belum ada proyek. Klik tombol &quot;Buat Proyek Baru&quot; di atas.
         </div>
       ) : (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {projects.map((p) => (
+          {safeProjects.map((p) => (
             <div
               key={p.id}
               className="bg-white border-[3px] border-black rounded-3xl overflow-hidden shadow-pop flex flex-col justify-between"

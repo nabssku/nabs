@@ -2,8 +2,10 @@
 
 import React, { useState, useEffect } from 'react';
 import { Plus, Trash2, Sparkles, X, Check, Loader2 } from 'lucide-react';
+import { useRouter } from 'next/navigation';
 
 export default function AdminSkillsPage() {
+  const router = useRouter();
   const [skills, setSkills] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const [modalOpen, setModalOpen] = useState(false);
@@ -16,10 +18,19 @@ export default function AdminSkillsPage() {
   const fetchSkills = async () => {
     try {
       const res = await fetch('/api/admin/skills');
+      if (res.status === 401) {
+        router.replace('/');
+        return;
+      }
       const data = await res.json();
-      setSkills(data);
+      if (Array.isArray(data)) {
+        setSkills(data);
+      } else {
+        setSkills([]);
+      }
     } catch (err) {
       console.error(err);
+      setSkills([]);
     } finally {
       setLoading(false);
     }
@@ -33,7 +44,7 @@ export default function AdminSkillsPage() {
     e.preventDefault();
     setSaving(true);
     try {
-      await fetch('/api/admin/skills', {
+      const res = await fetch('/api/admin/skills', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
@@ -42,6 +53,10 @@ export default function AdminSkillsPage() {
           proficiency_level: Number(proficiencyLevel),
         }),
       });
+      if (res.status === 401) {
+        router.replace('/');
+        return;
+      }
       setName('');
       setModalOpen(false);
       fetchSkills();
@@ -56,12 +71,18 @@ export default function AdminSkillsPage() {
   const handleDelete = async (id: string) => {
     if (!confirm('Hapus skill ini?')) return;
     try {
-      await fetch(`/api/admin/skills?id=${id}`, { method: 'DELETE' });
+      const res = await fetch(`/api/admin/skills?id=${id}`, { method: 'DELETE' });
+      if (res.status === 401) {
+        router.replace('/');
+        return;
+      }
       fetchSkills();
     } catch (err) {
       console.error(err);
     }
   };
+
+  const safeSkills = Array.isArray(skills) ? skills : [];
 
   return (
     <div className="space-y-8">
@@ -93,7 +114,7 @@ export default function AdminSkillsPage() {
       ) : (
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           {['frontend', 'backend', 'database', 'tools'].map((cat) => {
-            const catSkills = skills.filter((s) => s.category?.toLowerCase() === cat);
+            const catSkills = safeSkills.filter((s) => s?.category?.toLowerCase() === cat);
             return (
               <div
                 key={cat}
@@ -109,22 +130,26 @@ export default function AdminSkillsPage() {
                 </div>
 
                 <div className="flex flex-wrap gap-2.5">
-                  {catSkills.map((sk) => (
-                    <div
-                      key={sk.id}
-                      className="px-3 py-1.5 bg-pop-cream border-[2px] border-black rounded-xl text-xs font-bold flex items-center gap-2 shadow-pop-sm"
-                    >
-                      <span>{sk.name}</span>
-                      <span className="text-[10px] text-slate-500 font-mono">({sk.proficiency_level}%)</span>
-                      <button
-                        onClick={() => handleDelete(sk.id)}
-                        className="text-slate-400 hover:text-rose-600 transition"
-                        title="Hapus"
+                  {catSkills.length === 0 ? (
+                    <span className="text-xs text-slate-400 font-medium">Belum ada skill di kategori ini</span>
+                  ) : (
+                    catSkills.map((sk) => (
+                      <div
+                        key={sk.id}
+                        className="px-3 py-1.5 bg-pop-cream border-[2px] border-black rounded-xl text-xs font-bold flex items-center gap-2 shadow-pop-sm"
                       >
-                        <Trash2 className="w-3 h-3" />
-                      </button>
-                    </div>
-                  ))}
+                        <span>{sk.name}</span>
+                        <span className="text-[10px] text-slate-500 font-mono">({sk.proficiency_level}%)</span>
+                        <button
+                          onClick={() => handleDelete(sk.id)}
+                          className="text-slate-400 hover:text-rose-600 transition"
+                          title="Hapus"
+                        >
+                          <Trash2 className="w-3 h-3" />
+                        </button>
+                      </div>
+                    ))
+                  )}
                 </div>
               </div>
             );
