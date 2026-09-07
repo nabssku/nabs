@@ -1,12 +1,10 @@
 'use client';
 
 import React, { useState } from 'react';
-import { useRouter } from 'next/navigation';
 import { Shield, Sparkles, Key, Mail, Loader2, ArrowRight } from 'lucide-react';
 import Link from 'next/link';
 
 export default function AdminLoginPage() {
-  const router = useRouter();
   const [email, setEmail] = useState('nabilsahsadabisnis@gmail.com');
   const [password, setPassword] = useState('admin123456');
   const [loading, setLoading] = useState(false);
@@ -27,11 +25,15 @@ export default function AdminLoginPage() {
       const data = await res.json();
       if (!res.ok) throw new Error(data.error || 'Login gagal');
 
-      router.push('/admin');
-      router.refresh();
+      // Set cookie client-side as backup
+      if (data.token) {
+        document.cookie = `admin_session=${data.token}; path=/; max-age=604800; SameSite=Lax;`;
+      }
+
+      // Hard redirect to admin dashboard to ensure fresh cookie propagation
+      window.location.href = '/admin';
     } catch (err: any) {
       setErrorMsg(err.message || 'Email atau password tidak sesuai');
-    } finally {
       setLoading(false);
     }
   };

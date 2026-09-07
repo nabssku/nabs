@@ -20,16 +20,17 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
     // Verify session
     fetch('/api/auth/me')
       .then((res) => {
-        if (!res.ok) {
-          router.replace('/');
+        if (res.status === 401) {
+          window.location.href = '/admin/login';
         } else {
           setIsVerifying(false);
         }
       })
       .catch(() => {
-        router.replace('/');
+        // If network error, still allow if page is loaded
+        setIsVerifying(false);
       });
-  }, [pathname, router]);
+  }, [pathname]);
 
   // If on login page, don't show admin sidebar
   if (pathname === '/admin/login') {
@@ -58,7 +59,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
   const handleLogout = async () => {
     // Clear cookies & redirect to landing page
     document.cookie = 'admin_session=; path=/; expires=Thu, 01 Jan 1970 00:00:01 GMT;';
-    router.push('/');
+    window.location.href = '/';
   };
 
   return (

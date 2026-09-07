@@ -4,7 +4,8 @@ import { cookies } from 'next/headers';
 const JWT_SECRET = process.env.JWT_SECRET || 'nabssku_super_secret_jwt_key_2026_q2_malang';
 
 export interface AdminPayload {
-  id: string;
+  userId?: string;
+  id?: string;
   email: string;
   name: string;
   role: string;
@@ -22,9 +23,14 @@ export function verifyAdminToken(token: string): AdminPayload | null {
   }
 }
 
-export function getAdminSession(): AdminPayload | null {
-  const cookieStore = cookies();
-  const token = cookieStore.get('nabs_admin_token')?.value;
-  if (!token) return null;
-  return verifyAdminToken(token);
+export async function getAdminSession(): Promise<AdminPayload | null> {
+  try {
+    const cookieStore = cookies();
+    const token = cookieStore.get('admin_session')?.value;
+    if (!token) return null;
+
+    return verifyAdminToken(token);
+  } catch (error) {
+    return null;
+  }
 }
