@@ -1,7 +1,7 @@
 'use client';
 
-import React, { useState, useEffect } from 'react';
-import { Plus, Edit2, Trash2, ExternalLink, Github, Check, X, Loader2, Image as ImageIcon } from 'lucide-react';
+import React, { useState, useEffect, useRef } from 'react';
+import { Plus, Edit2, Trash2, ExternalLink, Github, Check, X, Loader2, Image as ImageIcon, UploadCloud } from 'lucide-react';
 
 export default function AdminProjectsPage() {
   const [projects, setProjects] = useState<any[]>([]);
@@ -15,12 +15,16 @@ export default function AdminProjectsPage() {
   const [summary, setSummary] = useState('');
   const [contentMarkdown, setContentMarkdown] = useState('');
   const [thumbnailUrl, setThumbnailUrl] = useState('');
+  const [cloudinaryPublicId, setCloudinaryPublicId] = useState('');
   const [category, setCategory] = useState('Web App');
   const [demoUrl, setDemoUrl] = useState('');
   const [repoUrl, setRepoUrl] = useState('');
   const [isPublished, setIsPublished] = useState(true);
   const [sortOrder, setSortOrder] = useState(0);
   const [saving, setSaving] = useState(false);
+  const [uploadingImage, setUploadingImage] = useState(false);
+
+  const fileInputRef = useRef<HTMLInputElement>(null);
 
   const fetchProjects = async () => {
     try {
@@ -45,6 +49,7 @@ export default function AdminProjectsPage() {
     setSummary('');
     setContentMarkdown('');
     setThumbnailUrl('https://images.unsplash.com/photo-1555066931-4365d14bab8c?q=80&w=800&auto=format&fit=crop');
+    setCloudinaryPublicId('');
     setCategory('Web App');
     setDemoUrl('');
     setRepoUrl('');
@@ -60,6 +65,7 @@ export default function AdminProjectsPage() {
     setSummary(proj.summary);
     setContentMarkdown(proj.content_markdown || '');
     setThumbnailUrl(proj.thumbnail_url);
+    setCloudinaryPublicId(proj.cloudinary_public_id || '');
     setCategory(proj.category || 'Web App');
     setDemoUrl(proj.demo_url || '');
     setRepoUrl(proj.repo_url || '');
@@ -75,6 +81,34 @@ export default function AdminProjectsPage() {
     }
   };
 
+  const handleImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    setUploadingImage(true);
+    try {
+      const formData = new FormData();
+      formData.append('file', file);
+      formData.append('folder', 'portfolio/projects');
+
+      const res = await fetch('/api/admin/upload', {
+        method: 'POST',
+        body: formData,
+      });
+
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.error || 'Upload gagal');
+
+      setThumbnailUrl(data.url);
+      setCloudinaryPublicId(data.public_id);
+    } catch (err: any) {
+      console.error(err);
+      alert(err.message || 'Gagal mengunggah gambar');
+    } finally {
+      setUploadingImage(false);
+    }
+  };
+
   const handleSave = async (e: React.FormEvent) => {
     e.preventDefault();
     setSaving(true);
@@ -86,6 +120,7 @@ export default function AdminProjectsPage() {
         summary,
         content_markdown: contentMarkdown,
         thumbnail_url: thumbnailUrl,
+        cloudinary_public_id: cloudinaryPublicId,
         category,
         demo_url: demoUrl,
         repo_url: repoUrl,
@@ -118,7 +153,7 @@ export default function AdminProjectsPage() {
   };
 
   const handleDelete = async (id: string) => {
-    if (!confirm('Yakin ingin menghapus project ini?')) return;
+    if (!confirm('Yakin ingin menghapus project ini beserta aset medianya?')) return;
     try {
       await fetch(`/api/admin/projects/${id}`, { method: 'DELETE' });
       fetchProjects();
@@ -137,7 +172,7 @@ export default function AdminProjectsPage() {
             Projects Manager 🚀
           </h1>
           <p className="text-xs sm:text-sm text-slate-600 font-medium">
-            Tambah, edit, dan kelola portofolio showcase & SaaS apps.
+            Tambah, edit, dan kelola portofolio showcase & aset Cloudinary.
           </p>
         </div>
 
@@ -280,15 +315,53 @@ export default function AdminProjectsPage() {
                 </div>
               </div>
 
-              <div>
-                <label className="block font-bold text-slate-700 mb-1">Thumbnail Image URL *</label>
-                <input
-                  type="url"
-                  required
-                  value={thumbnailUrl}
-                  onChange={(e) => setThumbnailUrl(e.target.value)}
-                  className="w-full px-3 py-2 bg-white border-[2px] border-black rounded-xl font-mono"
-                />
+              {/* Cloudinary Media Uploader */}
+              <div className="p-4 bg-white border-[2px] border-black rounded-2xl shadow-pop-sm space-y-3">
+                <div className="flex items-center justify-between">
+                  <label className="font-bold text-slate-700 flex items-center gap-1.5">
+                    <UploadCloud className="w-4 h-4 text-pop-blue" />
+                    <span>Thumbnail (Cloudinary CDN) *</span>
+                  </label>
+                  <input
+                    type="file"
+                    ref={fileInputRef}
+                    onChange={handleImageUpload}
+                    accept="image/*"
+                    className="hidden"
+                  />
+                  <button
+                    type="button"
+                    onClick={() => fileInputRef.current?.click()}
+                    disabled={uploadingImage}
+                    className="px-3 py-1.5 bg-pop-blue border-[2px] border-black rounded-xl font-display font-bold text-xs shadow-pop-sm hover:bg-pop-blue/80 flex items-center gap-1 cursor-pointer"
+                  >
+                    {uploadingImage ? (
+                      <>
+                        <Loader2 className="w-3.5 h-3.5 animate-spin" /> Mengunggah...
+                      </>
+                    ) : (
+                      <>
+                        <UploadCloud className="w-3.5 h-3.5" /> Upload dari Komputer
+                      </>
+                    )}
+                  </button>
+                </div>
+
+                <div className="flex items-center gap-3">
+                  {thumbnailUrl && (
+                    <div className="w-20 h-14 border-[2px] border-black rounded-xl overflow-hidden bg-slate-100 shrink-0">
+                      <img src={thumbnailUrl} alt="Preview" className="w-full h-full object-cover" />
+                    </div>
+                  )}
+                  <input
+                    type="url"
+                    required
+                    placeholder="https://res.cloudinary.com/..."
+                    value={thumbnailUrl}
+                    onChange={(e) => setThumbnailUrl(e.target.value)}
+                    className="w-full px-3 py-2 bg-pop-cream border-[2px] border-black rounded-xl font-mono text-xs"
+                  />
+                </div>
               </div>
 
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
