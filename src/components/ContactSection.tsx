@@ -1,10 +1,11 @@
 'use client';
 
 import React, { useState } from 'react';
-import { Send, Mail, MapPin, Github, Instagram, Linkedin, MessageSquare, Sparkles, Loader2, CheckCircle2 } from 'lucide-react';
+import { Send, Mail, MapPin, Github, Instagram, Linkedin, MessageSquare, Loader2, CheckCircle2 } from 'lucide-react';
+import { Profile } from '@/types';
 
 interface ContactProps {
-  profile: any;
+  profile: Profile;
 }
 
 export default function ContactSection({ profile }: ContactProps) {
@@ -35,8 +36,12 @@ export default function ContactSection({ profile }: ContactProps) {
       setName('');
       setEmail('');
       setMessage('');
-    } catch (err: any) {
-      setErrorMsg(err.message || 'Terjadi kesalahan');
+    } catch (err: unknown) {
+      if (err instanceof Error) {
+        setErrorMsg(err.message || 'Terjadi kesalahan');
+      } else {
+        setErrorMsg('Terjadi kesalahan');
+      }
     } finally {
       setLoading(false);
     }
@@ -80,7 +85,7 @@ export default function ContactSection({ profile }: ContactProps) {
               </div>
               <div className="flex items-center gap-3 p-3 bg-pop-cream border-[2px] border-black rounded-2xl shadow-pop-sm">
                 <MapPin className="w-4 h-4 text-pop-pink" />
-                <span>Malang, Jawa Timur, Indonesia</span>
+                <span>{profile?.location || 'Malang, Jawa Timur, Indonesia'}</span>
               </div>
             </div>
 

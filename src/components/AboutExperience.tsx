@@ -1,16 +1,14 @@
 'use client';
 
 import React from 'react';
-import { GraduationCap, Briefcase, MapPin, Calendar, CheckCircle, Sparkles } from 'lucide-react';
+import { GraduationCap, Briefcase, Sparkles } from 'lucide-react';
+import { Experience } from '@/types';
 
 interface AboutProps {
-  experiences: any[];
+  experiences: Experience[];
 }
 
 export default function AboutExperience({ experiences }: AboutProps) {
-  const education = experiences.filter((e) => e.type === 'education');
-  const work = experiences.filter((e) => e.type === 'work');
-
   return (
     <section id="about" className="py-20 px-4 sm:px-8 border-b-[3px] border-black bg-white">
       <div className="max-w-6xl mx-auto space-y-16">

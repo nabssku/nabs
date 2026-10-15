@@ -1,16 +1,17 @@
 'use client';
 
 import React, { useState } from 'react';
-import { Sparkles, ExternalLink, Github, ArrowUpRight, FolderGit2 } from 'lucide-react';
+import { ExternalLink, Github, ArrowUpRight, FolderGit2 } from 'lucide-react';
 import ProjectModal from './ProjectModal';
+import { Project } from '@/types';
 
 interface ProjectsProps {
-  projects: any[];
+  projects: Project[];
 }
 
 export default function ProjectsShowcase({ projects }: ProjectsProps) {
   const [selectedCategory, setSelectedCategory] = useState('All');
-  const [activeProjectModal, setActiveProjectModal] = useState<any | null>(null);
+  const [activeProjectModal, setActiveProjectModal] = useState<Project | null>(null);
 
   const categories = ['All', ...Array.from(new Set(projects.map((p) => p.category || 'Web App')))];
 

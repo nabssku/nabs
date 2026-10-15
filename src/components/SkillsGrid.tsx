@@ -2,9 +2,10 @@
 
 import React from 'react';
 import { Sparkles, Terminal, Database, Wrench, Layout } from 'lucide-react';
+import { Skill } from '@/types';
 
 interface SkillsProps {
-  skills: any[];
+  skills: Skill[];
 }
 
 export default function SkillsGrid({ skills }: SkillsProps) {

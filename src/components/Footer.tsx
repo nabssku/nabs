@@ -1,7 +1,7 @@
 'use client';
 
 import React from 'react';
-import { Heart, Sparkles } from 'lucide-react';
+import { Heart } from 'lucide-react';
 
 export default function Footer() {
   return (

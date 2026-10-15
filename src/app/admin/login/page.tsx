@@ -1,12 +1,12 @@
 'use client';
 
 import React, { useState } from 'react';
-import { Shield, Sparkles, Key, Mail, Loader2, ArrowRight } from 'lucide-react';
+import { Key, Mail, Loader2, ArrowRight } from 'lucide-react';
 import Link from 'next/link';
 
 export default function AdminLoginPage() {
-  const [email, setEmail] = useState('nabilsahsadabisnis@gmail.com');
-  const [password, setPassword] = useState('admin123456');
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
   const [loading, setLoading] = useState(false);
   const [errorMsg, setErrorMsg] = useState<string | null>(null);
 
@@ -32,8 +32,12 @@ export default function AdminLoginPage() {
 
       // Hard redirect to admin dashboard to ensure fresh cookie propagation
       window.location.href = '/admin';
-    } catch (err: any) {
-      setErrorMsg(err.message || 'Email atau password tidak sesuai');
+    } catch (err: unknown) {
+      if (err instanceof Error) {
+        setErrorMsg(err.message || 'Email atau password tidak sesuai');
+      } else {
+        setErrorMsg('Email atau password tidak sesuai');
+      }
       setLoading(false);
     }
   };
@@ -70,6 +74,7 @@ export default function AdminLoginPage() {
               <input
                 type="email"
                 required
+                placeholder="admin@example.com"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 className="w-full px-4 py-3 pl-10 bg-pop-cream border-[2px] border-black rounded-2xl text-sm font-medium focus:outline-none focus:ring-2 focus:ring-pop-yellow shadow-pop-sm"
@@ -86,6 +91,7 @@ export default function AdminLoginPage() {
               <input
                 type="password"
                 required
+                placeholder="••••••••"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
                 className="w-full px-4 py-3 pl-10 bg-pop-cream border-[2px] border-black rounded-2xl text-sm font-medium focus:outline-none focus:ring-2 focus:ring-pop-yellow shadow-pop-sm"

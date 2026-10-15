@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { sql, initDatabase } from '@/lib/db';
+import { PROFILE } from '@/lib/profile';
 
 export const dynamic = 'force-dynamic';
 
@@ -29,26 +30,12 @@ export async function GET(req: NextRequest) {
         projects,
         skills,
         experiences,
-        profile: {
-          name: 'Nabil Sahsada Suratno',
-          handle: '@nabssku',
-          title: 'Full-Stack Web & AI Developer',
-          location: 'Malang, Jawa Timur, Indonesia',
-          status: 'Available for Freelance & Full-Time',
-          bio: 'Informatics Engineering student at UMM & Freelance Full-Stack Developer. I craft playful, high-performance web apps, SaaS platforms, and intelligent agent systems with clean code and comic-inspired aesthetics.',
-          avatarUrl: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=500&auto=format&fit=crop&q=80',
-          resumeUrl: '/resume_nabil.pdf',
-          socials: {
-            github: 'https://github.com/nabssku',
-            instagram: 'https://instagram.com/nabsskun',
-            linkedin: 'https://linkedin.com/in/nabssku',
-            email: 'nabilsahsadabisnis@gmail.com',
-          }
-        }
+        profile: PROFILE,
       }
     });
-  } catch (error: any) {
+  } catch (error: unknown) {
     console.error('Public data query error:', error);
-    return NextResponse.json({ error: error.message || 'Gagal memuat data' }, { status: 500 });
+    const errorMessage = error instanceof Error ? error.message : 'Gagal memuat data';
+    return NextResponse.json({ error: errorMessage }, { status: 500 });
   }
 }

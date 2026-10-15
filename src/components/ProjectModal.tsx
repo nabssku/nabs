@@ -1,10 +1,11 @@
 'use client';
 
 import React from 'react';
-import { X, ExternalLink, Github, Sparkles, Layers, CheckCircle } from 'lucide-react';
+import { X, ExternalLink, Github } from 'lucide-react';
+import { Project } from '@/types';
 
 interface ProjectModalProps {
-  project: any;
+  project: Project | null;
   onClose: () => void;
 }
 

@@ -1,10 +1,11 @@
 'use client';
 
 import React from 'react';
-import { Sparkles, ArrowRight, Download, Terminal, Code2, Heart, Star, Coffee, Zap } from 'lucide-react';
+import { ArrowRight, Star, Coffee, Zap } from 'lucide-react';
+import { Profile } from '@/types';
 
 interface HeroProps {
-  profile: any;
+  profile: Profile;
 }
 
 export default function Hero({ profile }: HeroProps) {
@@ -22,7 +23,7 @@ export default function Hero({ profile }: HeroProps) {
 
           <div className="space-y-2">
             <div className="inline-block bg-pop-yellow border-[3px] border-black px-3 py-1 rounded-xl shadow-pop-sm rotate-[-2deg] font-display font-extrabold text-sm sm:text-base">
-              👋 Haii, I&apos;m Nabil Sahsada Suratno
+              👋 Haii, I&apos;m {profile?.name || 'Nabil Sahsada Suratno'}
             </div>
             <h1 className="text-4xl sm:text-5xl lg:text-6xl font-display font-black tracking-tight leading-[1.1] text-pop-dark">
               Building <span className="bg-pop-blue px-2 py-0.5 border-[3px] border-black rounded-xl shadow-pop-sm inline-block rotate-[1deg]">Playful</span>, Scalable Web & SaaS Apps.
@@ -30,7 +31,7 @@ export default function Hero({ profile }: HeroProps) {
           </div>
 
           <p className="text-base sm:text-lg text-slate-700 font-medium leading-relaxed max-w-xl">
-            Mahasiswa Teknik Informatika UMM & Full-Stack Developer asal Malang. Fokus merancang solusi digital dengan clean code, performa kilat, dan visual kartun yang berkesan.
+            {profile?.bio || 'Mahasiswa Teknik Informatika UMM & Full-Stack Developer asal Malang. Fokus merancang solusi digital dengan clean code, performa kilat, dan visual kartun yang berkesan.'}
           </p>
 
           {/* CTAs */}
@@ -80,9 +81,9 @@ export default function Hero({ profile }: HeroProps) {
               </div>
               <div className="bg-white border-[2px] border-black rounded-xl p-2.5 shadow-pop-sm">
                 <span className="font-display font-black text-sm text-slate-900 block">
-                  Nabil Sahsada Suratno
+                  {profile?.name || 'Nabil Sahsada Suratno'}
                 </span>
-                <span className="text-[11px] font-bold text-pop-orange">@nabssku • Malang, ID</span>
+                <span className="text-[11px] font-bold text-pop-orange">{profile?.handle || '@nabssku'} • Malang, ID</span>
               </div>
             </div>
 
