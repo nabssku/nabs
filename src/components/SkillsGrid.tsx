@@ -3,6 +3,7 @@
 import React from 'react';
 import { Sparkles, Terminal, Database, Wrench, Layout } from 'lucide-react';
 import { Skill } from '@/types';
+import SectionHeader from './ui/SectionHeader';
 
 interface SkillsProps {
   skills: Skill[];
@@ -20,18 +21,13 @@ export default function SkillsGrid({ skills }: SkillsProps) {
     <section id="skills" className="py-20 px-4 sm:px-8 border-b-[3px] border-black bg-white">
       <div className="max-w-6xl mx-auto space-y-12">
         
-        {/* Header */}
-        <div className="text-center space-y-3">
-          <div className="inline-flex items-center gap-2 px-3 py-1 bg-pop-green border-[2px] border-black rounded-xl shadow-pop-sm font-display font-bold text-xs uppercase tracking-wider text-black">
-            <Sparkles className="w-3.5 h-3.5" /> Capabilities
-          </div>
-          <h2 className="text-3xl sm:text-4xl font-display font-black tracking-tight text-pop-dark">
-            Tech Stack & Skills Stickers 🏷️
-          </h2>
-          <p className="text-slate-600 font-medium text-sm sm:text-base max-w-xl mx-auto">
-            Kumpulan teknologi dan tools yang biasa aku gunakan untuk membangun aplikasi end-to-end.
-          </p>
-        </div>
+        <SectionHeader
+          badge="Capabilities"
+          badgeColor="green"
+          badgeIcon={Sparkles}
+          title="Tech Stack & Skills Stickers 🏷️"
+          description="Kumpulan teknologi dan tools yang biasa aku gunakan untuk membangun aplikasi end-to-end."
+        />
 
         {/* Categories Grid */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">

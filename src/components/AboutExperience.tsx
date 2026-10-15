@@ -3,6 +3,9 @@
 import React from 'react';
 import { GraduationCap, Briefcase, Sparkles } from 'lucide-react';
 import { Experience } from '@/types';
+import SectionHeader from './ui/SectionHeader';
+import NeoCard from './ui/NeoCard';
+import NeoBadge from './ui/NeoBadge';
 
 interface AboutProps {
   experiences: Experience[];
@@ -13,23 +16,18 @@ export default function AboutExperience({ experiences }: AboutProps) {
     <section id="about" className="py-20 px-4 sm:px-8 border-b-[3px] border-black bg-white">
       <div className="max-w-6xl mx-auto space-y-16">
         
-        {/* Section Title */}
-        <div className="text-center space-y-3">
-          <div className="inline-flex items-center gap-2 px-3 py-1 bg-pop-yellow border-[2px] border-black rounded-xl shadow-pop-sm font-display font-bold text-xs uppercase tracking-wider">
-            <Sparkles className="w-3.5 h-3.5" /> Story & Journey
-          </div>
-          <h2 className="text-3xl sm:text-4xl font-display font-black tracking-tight text-pop-dark">
-            About Me & Career Roadmap 🗺️
-          </h2>
-          <p className="text-slate-600 font-medium text-sm sm:text-base max-w-2xl mx-auto">
-            Dari coding sejak SMK hingga membangun solusi web interaktif dan sistem AI di bangku kuliah.
-          </p>
-        </div>
+        <SectionHeader
+          badge="Story & Journey"
+          badgeColor="yellow"
+          badgeIcon={Sparkles}
+          title="About Me & Career Roadmap 🗺️"
+          description="Dari coding sejak SMK hingga membangun solusi web interaktif dan sistem AI di bangku kuliah."
+        />
 
         {/* About Card & Highlight Grid */}
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
           {/* Left Bio Card */}
-          <div className="lg:col-span-5 bg-pop-cream border-[3px] border-black rounded-3xl p-6 sm:p-8 shadow-pop relative space-y-4">
+          <NeoCard className="lg:col-span-5 bg-pop-cream relative space-y-4">
             <div className="w-12 h-12 bg-pop-pink border-[2px] border-black rounded-2xl flex items-center justify-center font-display font-extrabold text-2xl shadow-pop-sm">
               💡
             </div>
@@ -53,7 +51,7 @@ export default function AboutExperience({ experiences }: AboutProps) {
                 <span>🚀 Spesialis React, Next.js, & Neon DB</span>
               </div>
             </div>
-          </div>
+          </NeoCard>
 
           {/* Right Roadmap / Experience Timeline */}
           <div id="experience" className="lg:col-span-7 space-y-6">
@@ -61,18 +59,18 @@ export default function AboutExperience({ experiences }: AboutProps) {
               <h3 className="text-xl font-display font-bold text-slate-900 flex items-center gap-2">
                 <GraduationCap className="w-5 h-5 text-pop-orange" /> Education & Experience
               </h3>
-              <span className="text-xs font-bold px-2.5 py-1 bg-pop-blue border-[2px] border-black rounded-xl shadow-pop-sm">
-                Chronological
-              </span>
+              <NeoBadge color="blue">Chronological</NeoBadge>
             </div>
 
             <div className="space-y-4">
               {experiences.map((item, idx) => {
                 const isEdu = item.type === 'education';
                 return (
-                  <div
+                  <NeoCard
                     key={item.id || idx}
-                    className="bg-white border-[3px] border-black rounded-2xl p-5 shadow-pop hover:translate-x-[2px] hover:translate-y-[2px] hover:shadow-pop-sm transition relative overflow-hidden group"
+                    variant="interactive"
+                    padding={false}
+                    className="p-5 rounded-2xl relative overflow-hidden group"
                   >
                     <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-1 mb-2">
                       <div className="flex items-center gap-2">
@@ -96,7 +94,7 @@ export default function AboutExperience({ experiences }: AboutProps) {
                     <p className="text-xs sm:text-sm text-slate-700 leading-relaxed font-medium">
                       {item.description}
                     </p>
-                  </div>
+                  </NeoCard>
                 );
               })}
             </div>

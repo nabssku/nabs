@@ -4,6 +4,8 @@ import React, { useState } from 'react';
 import { ExternalLink, Github, ArrowUpRight, FolderGit2 } from 'lucide-react';
 import ProjectModal from './ProjectModal';
 import { Project } from '@/types';
+import SectionHeader from './ui/SectionHeader';
+import NeoButton from './ui/NeoButton';
 
 interface ProjectsProps {
   projects: Project[];
@@ -25,32 +27,30 @@ export default function ProjectsShowcase({ projects }: ProjectsProps) {
         
         {/* Section Header */}
         <div className="flex flex-col md:flex-row md:items-end justify-between gap-6">
-          <div className="space-y-3">
-            <div className="inline-flex items-center gap-2 px-3 py-1 bg-pop-orange border-[2px] border-black rounded-xl shadow-pop-sm font-display font-bold text-xs uppercase tracking-wider text-black">
-              <FolderGit2 className="w-3.5 h-3.5" /> Featured Works
-            </div>
-            <h2 className="text-3xl sm:text-4xl font-display font-black tracking-tight text-pop-dark">
-              Crafted Projects & SaaS 🚀
-            </h2>
-            <p className="text-slate-600 font-medium text-sm sm:text-base max-w-xl">
-              Koleksi web app, platform SaaS, dan sistem kasir yang dibangun dengan standar industri dan performa optimal.
-            </p>
-          </div>
+          <SectionHeader
+            badge="Featured Works"
+            badgeColor="orange"
+            badgeIcon={FolderGit2}
+            title="Crafted Projects & SaaS 🚀"
+            description="Koleksi web app, platform SaaS, dan sistem kasir yang dibangun dengan standar industri dan performa optimal."
+            align="left"
+          />
 
           {/* Filter Pills */}
           <div className="flex flex-wrap gap-2">
             {categories.map((cat) => (
-              <button
+              <NeoButton
                 key={cat}
+                variant={selectedCategory === cat ? 'primary' : 'secondary'}
+                size="sm"
                 onClick={() => setSelectedCategory(cat)}
-                className={`px-4 py-2 border-[2px] border-black rounded-xl font-display font-bold text-xs transition cursor-pointer ${
-                  selectedCategory === cat
-                    ? 'bg-black text-white shadow-pop-sm'
-                    : 'bg-white text-black hover:bg-slate-100 shadow-pop-sm'
-                }`}
+                className={selectedCategory === cat
+                  ? 'bg-black text-white border-[2px] shadow-pop-sm'
+                  : 'border-[2px] shadow-pop-sm'
+                }
               >
                 {cat}
-              </button>
+              </NeoButton>
             ))}
           </div>
         </div>
@@ -88,36 +88,26 @@ export default function ProjectsShowcase({ projects }: ProjectsProps) {
 
               {/* Action Buttons */}
               <div className="p-6 pt-0 flex items-center gap-2">
-                <button
+                <NeoButton
+                  variant="ghost"
+                  size="sm"
                   onClick={() => setActiveProjectModal(project)}
-                  className="flex-1 py-2.5 px-3 bg-pop-yellow border-[2px] border-black rounded-xl font-display font-bold text-xs shadow-pop-sm hover:bg-pop-yellow/80 transition flex items-center justify-center gap-1 cursor-pointer"
+                  className="flex-1 py-2.5"
                 >
                   <span>Detail Info</span>
                   <ArrowUpRight className="w-3.5 h-3.5" />
-                </button>
+                </NeoButton>
 
                 {project.demo_url && (
-                  <a
-                    href={project.demo_url}
-                    target="_blank"
-                    rel="noreferrer"
-                    className="p-2.5 bg-white border-[2px] border-black rounded-xl shadow-pop-sm hover:bg-slate-100 transition"
-                    title="Live Demo"
-                  >
+                  <NeoButton variant="icon" size="sm" href={project.demo_url} target="_blank" rel="noreferrer" className="p-2.5">
                     <ExternalLink className="w-4 h-4 text-black" />
-                  </a>
+                  </NeoButton>
                 )}
 
                 {project.repo_url && (
-                  <a
-                    href={project.repo_url}
-                    target="_blank"
-                    rel="noreferrer"
-                    className="p-2.5 bg-white border-[2px] border-black rounded-xl shadow-pop-sm hover:bg-slate-100 transition"
-                    title="Source Code"
-                  >
+                  <NeoButton variant="icon" size="sm" href={project.repo_url} target="_blank" rel="noreferrer" className="p-2.5">
                     <Github className="w-4 h-4 text-black" />
-                  </a>
+                  </NeoButton>
                 )}
               </div>
             </div>

@@ -3,6 +3,10 @@
 import React, { useState } from 'react';
 import { Send, Mail, MapPin, Github, Instagram, Linkedin, MessageSquare, Loader2, CheckCircle2 } from 'lucide-react';
 import { Profile } from '@/types';
+import SectionHeader from './ui/SectionHeader';
+import NeoCard from './ui/NeoCard';
+import NeoButton from './ui/NeoButton';
+import { NeoInput, NeoTextarea } from './ui/NeoInput';
 
 interface ContactProps {
   profile: Profile;
@@ -37,11 +41,8 @@ export default function ContactSection({ profile }: ContactProps) {
       setEmail('');
       setMessage('');
     } catch (err: unknown) {
-      if (err instanceof Error) {
-        setErrorMsg(err.message || 'Terjadi kesalahan');
-      } else {
-        setErrorMsg('Terjadi kesalahan');
-      }
+      const errorMessage = err instanceof Error ? err.message : 'Terjadi kesalahan';
+      setErrorMsg(errorMessage);
     } finally {
       setLoading(false);
     }
@@ -51,24 +52,19 @@ export default function ContactSection({ profile }: ContactProps) {
     <section id="contact" className="py-20 px-4 sm:px-8 border-b-[3px] border-black bg-pop-cream bg-halftone">
       <div className="max-w-6xl mx-auto space-y-12">
         
-        {/* Header */}
-        <div className="text-center space-y-3">
-          <div className="inline-flex items-center gap-2 px-3 py-1 bg-pop-pink border-[2px] border-black rounded-xl shadow-pop-sm font-display font-bold text-xs uppercase tracking-wider text-black">
-            <MessageSquare className="w-3.5 h-3.5" /> Direct Contact
-          </div>
-          <h2 className="text-3xl sm:text-4xl font-display font-black tracking-tight text-pop-dark">
-            Let&apos;s Build Something Epic! 📬
-          </h2>
-          <p className="text-slate-600 font-medium text-sm sm:text-base max-w-xl mx-auto">
-            Tertarik membuat website, berkolaborasi proyek SaaS, atau ingin konsultasi teknis? Kirim pesanmu di bawah.
-          </p>
-        </div>
+        <SectionHeader
+          badge="Direct Contact"
+          badgeColor="pink"
+          badgeIcon={MessageSquare}
+          title="Let's Build Something Epic! 📬"
+          description="Tertarik membuat website, berkolaborasi proyek SaaS, atau ingin konsultasi teknis? Kirim pesanmu di bawah."
+        />
 
         {/* Form & Social Box */}
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
           
           {/* Left: Contact Info & Socials */}
-          <div className="lg:col-span-5 bg-white border-[3px] border-black rounded-3xl p-6 sm:p-8 shadow-pop space-y-6">
+          <NeoCard className="lg:col-span-5 space-y-6">
             <div className="space-y-2">
               <h3 className="font-display font-black text-2xl text-slate-900">
                 Get In Touch
@@ -95,39 +91,21 @@ export default function ContactSection({ profile }: ContactProps) {
                 Verified Socials
               </span>
               <div className="flex gap-2">
-                <a
-                  href={profile?.socials?.github || 'https://github.com/nabssku'}
-                  target="_blank"
-                  rel="noreferrer"
-                  className="p-3 bg-pop-yellow border-[2px] border-black rounded-xl shadow-pop-sm hover:translate-x-[1px] hover:translate-y-[1px] transition"
-                  title="GitHub"
-                >
+                <NeoButton variant="icon" size="sm" href={profile?.socials?.github || 'https://github.com/nabssku'} target="_blank" rel="noreferrer" className="p-3 bg-pop-yellow">
                   <Github className="w-5 h-5 text-black" />
-                </a>
-                <a
-                  href={profile?.socials?.instagram || 'https://instagram.com/nabsskun'}
-                  target="_blank"
-                  rel="noreferrer"
-                  className="p-3 bg-pop-pink border-[2px] border-black rounded-xl shadow-pop-sm hover:translate-x-[1px] hover:translate-y-[1px] transition"
-                  title="Instagram"
-                >
+                </NeoButton>
+                <NeoButton variant="icon" size="sm" href={profile?.socials?.instagram || 'https://instagram.com/nabsskun'} target="_blank" rel="noreferrer" className="p-3 bg-pop-pink">
                   <Instagram className="w-5 h-5 text-black" />
-                </a>
-                <a
-                  href={profile?.socials?.linkedin || 'https://linkedin.com'}
-                  target="_blank"
-                  rel="noreferrer"
-                  className="p-3 bg-pop-blue border-[2px] border-black rounded-xl shadow-pop-sm hover:translate-x-[1px] hover:translate-y-[1px] transition"
-                  title="LinkedIn"
-                >
+                </NeoButton>
+                <NeoButton variant="icon" size="sm" href={profile?.socials?.linkedin || 'https://linkedin.com'} target="_blank" rel="noreferrer" className="p-3 bg-pop-blue">
                   <Linkedin className="w-5 h-5 text-black" />
-                </a>
+                </NeoButton>
               </div>
             </div>
-          </div>
+          </NeoCard>
 
           {/* Right: Contact Form */}
-          <div className="lg:col-span-7 bg-white border-[3px] border-black rounded-3xl p-6 sm:p-8 shadow-pop">
+          <NeoCard className="lg:col-span-7">
             <form onSubmit={handleSubmit} className="space-y-4">
               {successMsg && (
                 <div className="p-4 bg-pop-green border-[2px] border-black rounded-2xl shadow-pop-sm flex items-center gap-2 text-xs sm:text-sm font-bold text-black">
@@ -142,52 +120,39 @@ export default function ContactSection({ profile }: ContactProps) {
                 </div>
               )}
 
-              <div>
-                <label className="block text-xs font-display font-bold uppercase tracking-wider text-slate-700 mb-1.5">
-                  Nama Lengkap *
-                </label>
-                <input
-                  type="text"
-                  required
-                  placeholder="Misal: Alex Pratama"
-                  value={name}
-                  onChange={(e) => setName(e.target.value)}
-                  className="w-full px-4 py-3 bg-pop-cream border-[2px] border-black rounded-2xl text-sm font-medium focus:outline-none focus:ring-2 focus:ring-pop-yellow shadow-pop-sm"
-                />
-              </div>
+              <NeoInput
+                label="Nama Lengkap *"
+                type="text"
+                required
+                placeholder="Misal: Alex Pratama"
+                value={name}
+                onChange={(e) => setName(e.target.value)}
+              />
 
-              <div>
-                <label className="block text-xs font-display font-bold uppercase tracking-wider text-slate-700 mb-1.5">
-                  Alamat Email *
-                </label>
-                <input
-                  type="email"
-                  required
-                  placeholder="alex@example.com"
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
-                  className="w-full px-4 py-3 bg-pop-cream border-[2px] border-black rounded-2xl text-sm font-medium focus:outline-none focus:ring-2 focus:ring-pop-yellow shadow-pop-sm"
-                />
-              </div>
+              <NeoInput
+                label="Alamat Email *"
+                type="email"
+                required
+                placeholder="alex@example.com"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+              />
 
-              <div>
-                <label className="block text-xs font-display font-bold uppercase tracking-wider text-slate-700 mb-1.5">
-                  Pesan / Rencana Proyek *
-                </label>
-                <textarea
-                  required
-                  rows={4}
-                  placeholder="Ceritakan detail proyek atau ajakan diskusi kamu..."
-                  value={message}
-                  onChange={(e) => setMessage(e.target.value)}
-                  className="w-full px-4 py-3 bg-pop-cream border-[2px] border-black rounded-2xl text-sm font-medium focus:outline-none focus:ring-2 focus:ring-pop-yellow shadow-pop-sm"
-                />
-              </div>
+              <NeoTextarea
+                label="Pesan / Rencana Proyek *"
+                required
+                rows={4}
+                placeholder="Ceritakan detail proyek atau ajakan diskusi kamu..."
+                value={message}
+                onChange={(e) => setMessage(e.target.value)}
+              />
 
-              <button
+              <NeoButton
                 type="submit"
                 disabled={loading}
-                className="w-full py-4 bg-pop-yellow hover:bg-pop-yellow/90 text-black border-[3px] border-black rounded-2xl font-display font-black text-sm sm:text-base shadow-pop hover:translate-x-[2px] hover:translate-y-[2px] hover:shadow-pop-sm transition active:shadow-none flex items-center justify-center gap-2 cursor-pointer"
+                variant="ghost"
+                size="lg"
+                className="w-full py-4 bg-pop-yellow hover:bg-pop-yellow/90 border-[3px] font-black"
               >
                 {loading ? (
                   <>
@@ -198,9 +163,9 @@ export default function ContactSection({ profile }: ContactProps) {
                     <Send className="w-5 h-5" /> Kirim Pesan Sekarang
                   </>
                 )}
-              </button>
+              </NeoButton>
             </form>
-          </div>
+          </NeoCard>
 
         </div>
 
