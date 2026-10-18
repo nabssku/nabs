@@ -28,7 +28,9 @@ export default function AdminExperiencesPage() {
         return;
       }
       const data = await res.json();
-      if (Array.isArray(data)) {
+      if (Array.isArray(data?.experiences)) {
+        setExperiences(data.experiences);
+      } else if (Array.isArray(data)) {
         setExperiences(data);
       } else {
         setExperiences([]);

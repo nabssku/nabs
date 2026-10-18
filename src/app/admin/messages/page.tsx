@@ -17,7 +17,9 @@ export default function AdminMessagesPage() {
         return;
       }
       const data = await res.json();
-      if (Array.isArray(data)) {
+      if (Array.isArray(data?.messages)) {
+        setMessages(data.messages);
+      } else if (Array.isArray(data)) {
         setMessages(data);
       } else {
         setMessages([]);

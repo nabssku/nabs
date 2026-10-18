@@ -5,7 +5,7 @@ import { getAdminSession } from '@/lib/auth';
 export const dynamic = 'force-dynamic';
 
 export async function GET() {
-  const session = getAdminSession();
+  const session = await getAdminSession();
   if (!session) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
 
   try {
@@ -17,12 +17,14 @@ export async function GET() {
 }
 
 export async function PATCH(req: NextRequest) {
-  const session = getAdminSession();
+  const session = await getAdminSession();
   if (!session) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
 
   try {
-    const body = await req.json();
-    const { id, is_read = true } = body;
+    const { searchParams } = new URL(req.url);
+    const body = await req.json().catch(() => ({}));
+    const id = searchParams.get('id') || body.id;
+    const is_read = body.is_read ?? true;
 
     if (!id) return NextResponse.json({ error: 'ID pesan diperlukan' }, { status: 400 });
 
@@ -34,7 +36,7 @@ export async function PATCH(req: NextRequest) {
 }
 
 export async function DELETE(req: NextRequest) {
-  const session = getAdminSession();
+  const session = await getAdminSession();
   if (!session) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
 
   try {

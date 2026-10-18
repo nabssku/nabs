@@ -23,7 +23,9 @@ export default function AdminSkillsPage() {
         return;
       }
       const data = await res.json();
-      if (Array.isArray(data)) {
+      if (Array.isArray(data?.skills)) {
+        setSkills(data.skills);
+      } else if (Array.isArray(data)) {
         setSkills(data);
       } else {
         setSkills([]);

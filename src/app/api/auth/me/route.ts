@@ -4,7 +4,7 @@ import { getAdminSession } from '@/lib/auth';
 export const dynamic = 'force-dynamic';
 
 export async function GET(req: NextRequest) {
-  const session = getAdminSession();
+  const session = await getAdminSession();
   if (!session) {
     return NextResponse.json({ authenticated: false }, { status: 401 });
   }
@@ -13,6 +13,6 @@ export async function GET(req: NextRequest) {
 
 export async function POST() {
   const response = NextResponse.json({ success: true, message: 'Logged out' });
-  response.cookies.delete('nabs_admin_token');
+  response.cookies.delete('admin_session');
   return response;
 }
