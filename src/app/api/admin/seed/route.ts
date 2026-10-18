@@ -1,5 +1,5 @@
 import { NextResponse } from 'next/server';
-import { sql } from '@/lib/db';
+import { sql, initDatabase } from '@/lib/db';
 
 export const dynamic = 'force-dynamic';
 
@@ -15,8 +15,16 @@ export async function GET(req: Request) {
 
   const log: string[] = [];
 
+  // Step 1: Create tables first
   try {
-    // Step 1: Delete
+    await initDatabase();
+    log.push('✅ initDatabase (tables created)');
+  } catch (e: any) {
+    return NextResponse.json({ step: 'initDatabase', error: e.message, log }, { status: 500 });
+  }
+
+  // Step 2: Clear existing data
+  try {
     await sql`DELETE FROM projects;`;
     log.push('✅ DELETE projects');
     await sql`DELETE FROM skills;`;
@@ -27,6 +35,7 @@ export async function GET(req: Request) {
     return NextResponse.json({ step: 'DELETE', error: e.message, log }, { status: 500 });
   }
 
+  // Step 3: Insert projects
   try {
     await sql`
       INSERT INTO projects (id, title, slug, summary, content_markdown, thumbnail_url, category, demo_url, repo_url, is_featured, is_published, sort_order) VALUES
@@ -39,6 +48,7 @@ export async function GET(req: Request) {
     return NextResponse.json({ step: 'INSERT projects', error: e.message, log }, { status: 500 });
   }
 
+  // Step 4: Insert skills
   try {
     await sql`
       INSERT INTO skills (id, name, category, proficiency_level) VALUES
@@ -60,6 +70,7 @@ export async function GET(req: Request) {
     return NextResponse.json({ step: 'INSERT skills', error: e.message, log }, { status: 500 });
   }
 
+  // Step 5: Insert experiences
   try {
     await sql`
       INSERT INTO experiences (id, title, institution, location, start_year, end_year, description, type, sort_order) VALUES
@@ -72,6 +83,7 @@ export async function GET(req: Request) {
     return NextResponse.json({ step: 'INSERT experiences', error: e.message, log }, { status: 500 });
   }
 
+  // Step 6: Count
   try {
     const projectCount = await sql`SELECT count(*) as count FROM projects;`;
     const skillCount   = await sql`SELECT count(*) as count FROM skills;`;
