@@ -1,7 +1,7 @@
 'use client';
 
 import React from 'react';
-import { Sparkles, Terminal, Database, Wrench, Layout } from 'lucide-react';
+import { Sparkles } from 'lucide-react';
 import { Skill } from '@/types';
 import SectionHeader from './ui/SectionHeader';
 
@@ -9,75 +9,75 @@ interface SkillsProps {
   skills: Skill[];
 }
 
-export default function SkillsGrid({ skills }: SkillsProps) {
-  const categories = [
-    { key: 'frontend', label: 'Frontend & UI', icon: Layout, color: 'bg-pop-yellow' },
-    { key: 'backend', label: 'Backend & APIs', icon: Terminal, color: 'bg-pop-orange' },
-    { key: 'database', label: 'Database & ORM', icon: Database, color: 'bg-pop-blue' },
-    { key: 'tools', label: 'Tools & DevOps', icon: Wrench, color: 'bg-pop-pink' },
-  ];
+const colorCycles = [
+  { badge: 'bg-pop-yellow', bar: 'bg-pop-yellow' },
+  { badge: 'bg-pop-blue', bar: 'bg-pop-blue' },
+  { badge: 'bg-pop-green', bar: 'bg-pop-green' },
+  { badge: 'bg-pop-orange', bar: 'bg-pop-orange' },
+  { badge: 'bg-pop-pink', bar: 'bg-pop-pink' },
+  { badge: 'bg-pop-purple', bar: 'bg-pop-purple' },
+];
 
+export default function SkillsGrid({ skills }: SkillsProps) {
   return (
     <section id="skills" className="py-20 px-4 sm:px-8 border-b-[3px] border-black bg-white">
       <div className="max-w-6xl mx-auto space-y-12">
         
+        {/* Section Header */}
         <SectionHeader
-          badge="Capabilities"
+          badge="PROFICIENCY"
           badgeColor="green"
           badgeIcon={Sparkles}
-          title="Tech Stack & Skills Stickers 🏷️"
-          description="Kumpulan teknologi dan tools yang biasa aku gunakan untuk membangun aplikasi end-to-end."
+          title="SKILLS & METRICS"
+          description="Quantifiable expertise across modern frontend frameworks, backend systems, databases, and developer tooling."
+          align="center"
         />
 
-        {/* Categories Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-          {categories.map((cat) => {
-            const catSkills = skills.filter((s) => s.category?.toLowerCase() === cat.key);
-            const Icon = cat.icon;
+        {/* Bento Grid */}
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          {skills.map((skill, index) => {
+            const colors = colorCycles[index % colorCycles.length];
+            const level = Math.min(Math.max(skill.proficiency_level || 80, 0), 100);
 
             return (
               <div
-                key={cat.key}
-                className="bg-pop-cream border-[3px] border-black rounded-3xl p-6 shadow-pop space-y-4 flex flex-col justify-between"
+                key={skill.id}
+                className="bg-white border-[3px] border-black shadow-pop-xl rounded-3xl p-6 bento-card space-y-4 flex flex-col justify-between"
               >
-                <div>
-                  <div className="flex items-center gap-2.5 pb-3 border-b-2 border-dashed border-slate-300 mb-4">
-                    <div className={`p-2 rounded-xl border-[2px] border-black ${cat.color} shadow-pop-sm`}>
-                      <Icon className="w-4 h-4 text-black" />
-                    </div>
-                    <h3 className="font-display font-bold text-base text-slate-900">
-                      {cat.label}
-                    </h3>
-                  </div>
-
-                  {/* Skills Badges */}
-                  <div className="flex flex-wrap gap-2">
-                    {catSkills.length === 0 ? (
-                      <span className="text-xs text-slate-400">Belum ada data</span>
-                    ) : (
-                      catSkills.map((sk) => (
-                        <div
-                          key={sk.id}
-                          className="px-3 py-1.5 bg-white border-[2px] border-black rounded-xl font-display font-bold text-xs shadow-pop-sm hover:rotate-2 hover:bg-pop-yellow transition cursor-default flex items-center justify-between gap-2"
-                        >
-                          <span>{sk.name}</span>
-                          <span className="text-[10px] text-slate-500 font-mono">
-                            {sk.proficiency_level}%
-                          </span>
-                        </div>
-                      ))
-                    )}
-                  </div>
+                {/* Top Row: Skill Name + Percentage Badge */}
+                <div className="flex items-center justify-between gap-2">
+                  <h3 className="font-display font-extrabold text-xl text-pop-dark tracking-tight">
+                    {skill.name}
+                  </h3>
+                  <span className={`${colors.badge} border-[2px] border-black rounded-xl px-2.5 py-1 font-comic text-xs font-extrabold text-pop-dark shadow-pop-sm`}>
+                    {level}%
+                  </span>
                 </div>
 
-                <div className="pt-2 text-[11px] font-bold text-slate-400 uppercase tracking-wider">
-                  {catSkills.length} Verified Stack
+                {/* Category or Subtitle */}
+                <p className="font-comic text-xs text-pop-dark/70 uppercase tracking-wider">
+                  {skill.category || 'Core Skill'}
+                </p>
+
+                {/* Bento Progress Bar */}
+                <div className="space-y-1.5 pt-2">
+                  <div className="w-full bg-pop-cream border-[2px] border-black h-4 rounded-xl overflow-hidden shadow-pop-sm">
+                    <div
+                      className={`h-full ${colors.bar} border-r-2 border-black transition-all duration-500`}
+                      style={{ width: `${level}%` }}
+                    />
+                  </div>
                 </div>
               </div>
             );
           })}
         </div>
 
+        {skills.length === 0 && (
+          <div className="text-center py-16 bg-pop-cream border-[3px] border-black rounded-3xl shadow-pop">
+            <p className="font-comic text-lg text-pop-dark">No skills recorded yet.</p>
+          </div>
+        )}
       </div>
     </section>
   );

@@ -31,6 +31,14 @@ h1, h2, h3, .font-display {
 }
 
 /* Custom Neo-Brutalism Utilities */
+.bento-card {
+  transition: all 0.2s ease;
+}
+.bento-card:hover {
+  transform: translate(-3px, -3px);
+  box-shadow: 7px 7px 0px 0px rgba(0, 0, 0, 1);
+}
+
 .neo-box {
   border: 3px solid #000;
   box-shadow: 4px 4px 0px 0px #000;

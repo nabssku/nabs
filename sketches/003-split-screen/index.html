@@ -1,0 +1,345 @@
+<!DOCTYPE html>
+<html lang="id" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Nabil Sahsada Suratno — Full-Stack & AI Developer (Split Screen)</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;600;700&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Space+Grotesk:wght@500;700&display=swap" rel="stylesheet">
+    <script>
+        tailwind.config = {
+          theme: {
+            extend: {
+              colors: {
+                'pop-yellow': '#FDE047',
+                'pop-orange': '#FB923C',
+                'pop-blue': '#93C5FD',
+                'pop-green': '#86EFAC',
+                'pop-pink': '#F472B6',
+                'pop-purple': '#C084FC',
+                'pop-cream': '#FFFDF7',
+                'pop-dark': '#18181B',
+              },
+              fontFamily: {
+                display: ['Space Grotesk', 'sans-serif'],
+                sans: ['Plus Jakarta Sans', 'sans-serif'],
+                comic: ['Fredoka', 'cursive'],
+              },
+              boxShadow: {
+                'pop-sm': '2px 2px 0px 0px rgba(0,0,0,1)',
+                'pop': '4px 4px 0px 0px rgba(0,0,0,1)',
+                'pop-lg': '6px 6px 0px 0px rgba(0,0,0,1)',
+                'pop-xl': '8px 8px 0px 0px rgba(0,0,0,1)',
+              }
+            }
+          }
+        }
+    </script>
+    <style>
+        .neo-border { border: 3px solid #18181B; }
+        .active-nav {
+            background-color: #FDE047 !important;
+            box-shadow: 4px 4px 0px 0px rgba(0,0,0,1);
+            transform: translate(-2px, -2px);
+        }
+    </style>
+</head>
+<body class="bg-pop-cream text-pop-dark font-sans selection:bg-pop-yellow selection:text-pop-dark">
+
+    <div class="max-w-7xl mx-auto min-h-screen flex flex-col lg:flex-row">
+        
+        <!-- Left Panel: Sticky Identity & Navigation (40% on lg) -->
+        <aside class="lg:w-2/5 lg:h-screen lg:sticky lg:top-0 p-6 sm:p-10 flex flex-col justify-between bg-pop-yellow border-b-3 lg:border-b-0 lg:border-r-3 border-pop-dark z-30">
+            <div>
+                <!-- Top Brand -->
+                <div class="flex items-center justify-between mb-8">
+                    <a href="#" class="font-display text-2xl font-bold tracking-tight bg-pop-cream px-4 py-2 neo-border shadow-pop rounded-xl">
+                        @nabssku<span class="text-pop-orange">.</span>
+                    </a>
+                    <span class="bg-pop-green neo-border px-3 py-1 rounded-xl font-comic text-xs font-bold shadow-pop-sm flex items-center gap-1.5">
+                        <span class="w-2.5 h-2.5 bg-green-600 rounded-full border border-black animate-pulse"></span> Available
+                    </span>
+                </div>
+
+                <!-- Avatar & Title -->
+                <div class="flex items-center gap-4 mb-6">
+                    <div class="w-20 h-20 bg-pop-pink neo-border shadow-pop rounded-2xl overflow-hidden flex items-center justify-center font-display font-extrabold text-3xl">
+                        NS
+                    </div>
+                    <div>
+                        <h1 class="font-display text-2xl font-extrabold">Nabil Sahsada</h1>
+                        <p class="font-comic font-bold text-sm text-pop-dark/80">Full-Stack & AI Developer</p>
+                        <p class="text-xs font-medium text-pop-dark/70 mt-0.5">UMM Informatics • Malang</p>
+                    </div>
+                </div>
+
+                <p class="text-pop-dark/90 font-medium mb-8 leading-relaxed">
+                    Building robust SaaS platforms, scalable web applications, and intelligent agent systems with a bold editorial Neo-Brutalism flair.
+                </p>
+
+                <!-- Navigation Links -->
+                <nav class="hidden lg:flex flex-col gap-3 font-display font-bold text-lg">
+                    <a href="#about" class="nav-link bg-pop-cream neo-border px-4 py-2.5 rounded-xl shadow-pop-sm transition-all hover:bg-pop-white">01. About Me</a>
+                    <a href="#projects" class="nav-link bg-pop-cream neo-border px-4 py-2.5 rounded-xl shadow-pop-sm transition-all hover:bg-pop-white">02. Featured Projects</a>
+                    <a href="#skills" class="nav-link bg-pop-cream neo-border px-4 py-2.5 rounded-xl shadow-pop-sm transition-all hover:bg-pop-white">03. Tech Stack</a>
+                    <a href="#contact" class="nav-link bg-pop-cream neo-border px-4 py-2.5 rounded-xl shadow-pop-sm transition-all hover:bg-pop-white">04. Contact & Hire</a>
+                </nav>
+            </div>
+
+            <!-- Socials & Footer Note -->
+            <div class="mt-8 lg:mt-0 pt-6 border-t-2 border-pop-dark/20">
+                <div class="flex gap-3 mb-4">
+                    <a href="https://github.com/nabssku" target="_blank" class="flex-1 bg-pop-cream neo-border py-2 px-3 rounded-xl font-display font-bold text-center text-sm shadow-pop-sm hover:translate-x-0.5 hover:translate-y-0.5 transition-all">GitHub ↗</a>
+                    <a href="https://instagram.com/nabsskun" target="_blank" class="flex-1 bg-pop-cream neo-border py-2 px-3 rounded-xl font-display font-bold text-center text-sm shadow-pop-sm hover:translate-x-0.5 hover:translate-y-0.5 transition-all">Instagram ↗</a>
+                </div>
+                <div class="font-comic text-xs text-pop-dark/70 text-center">
+                    Split-Screen Editorial Edition © 2026
+                </div>
+            </div>
+        </aside>
+
+        <!-- Right Panel: Scrollable Content (60% on lg) -->
+        <main class="lg:w-3/5 p-6 sm:p-12 flex flex-col gap-20 bg-pop-cream">
+            
+            <!-- Hero / Intro for Mobile & Scroll -->
+            <section id="hero" class="pt-4 lg:pt-0">
+                <div class="bg-white neo-border shadow-pop-xl rounded-3xl p-8 mb-8">
+                    <span class="bg-pop-orange neo-border px-3 py-1 rounded-lg font-comic font-bold text-xs shadow-pop-sm inline-block mb-3">EDITORIAL OVERVIEW</span>
+                    <h2 class="font-display text-3xl sm:text-4xl font-extrabold mb-4">Crafting high-performance digital experiences.</h2>
+                    <p class="text-pop-dark/80 font-medium text-lg leading-relaxed mb-6">
+                        As an Informatics student at UMM and passionate full-stack developer, I bridge rigorous software architecture with striking brutalist design aesthetics.
+                    </p>
+                    <div class="grid grid-cols-2 gap-4">
+                        <div class="bg-pop-yellow neo-border p-4 rounded-2xl shadow-pop-sm">
+                            <div class="font-display text-3xl font-extrabold">3+</div>
+                            <div class="text-xs font-comic font-bold uppercase mt-1">Years Experience</div>
+                        </div>
+                        <div class="bg-pop-blue neo-border p-4 rounded-2xl shadow-pop-sm">
+                            <div class="font-display text-3xl font-extrabold">15+</div>
+                            <div class="text-xs font-comic font-bold uppercase mt-1">Shipped Apps</div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- About Section -->
+            <section id="about" class="scroll-mt-10">
+                <div class="bg-white neo-border shadow-pop-xl rounded-3xl p-8">
+                    <span class="bg-pop-purple neo-border px-3 py-1 rounded-lg font-comic font-bold text-xs shadow-pop-sm inline-block mb-3">01 / BACKGROUND</span>
+                    <h2 class="font-display text-3xl font-extrabold mb-6">Journey & Education</h2>
+                    
+                    <div class="space-y-6">
+                        <div class="border-l-4 border-pop-orange pl-4">
+                            <div class="font-comic font-bold text-pop-orange text-sm">2024 — Present</div>
+                            <h3 class="font-display text-xl font-extrabold">Informatics Engineering Student</h3>
+                            <p class="font-comic font-bold text-pop-dark/70 text-sm">Universitas Muhammadiyah Malang (UMM)</p>
+                            <p class="text-pop-dark/80 font-medium mt-1">Focusing on algorithms, system architecture, and AI agent frameworks.</p>
+                        </div>
+                        <div class="border-l-4 border-pop-blue pl-4">
+                            <div class="font-comic font-bold text-pop-blue text-sm">Vocational Graduate</div>
+                            <h3 class="font-display text-xl font-extrabold">SMK Rekayasa Perangkat Lunak</h3>
+                            <p class="font-comic font-bold text-pop-dark/70 text-sm">Software Engineering Core</p>
+                            <p class="text-pop-dark/80 font-medium mt-1">Acquired foundational web programming, database management, and version control skills.</p>
+                        </div>
+                        <div class="border-l-4 border-pop-green pl-4">
+                            <div class="font-comic font-bold text-green-700 text-sm">Freelance & Open Source</div>
+                            <h3 class="font-display text-xl font-extrabold">Full-Stack Web Developer</h3>
+                            <p class="font-comic font-bold text-pop-dark/70 text-sm">Independent Solutions</p>
+                            <p class="text-pop-dark/80 font-medium mt-1">Building custom SaaS applications and developer tooling.</p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Projects Section -->
+            <section id="projects" class="scroll-mt-10">
+                <div class="mb-6">
+                    <span class="bg-pop-pink neo-border px-3 py-1 rounded-lg font-comic font-bold text-xs shadow-pop-sm inline-block mb-3">02 / PORTFOLIO</span>
+                    <h2 class="font-display text-3xl font-extrabold">Featured Projects</h2>
+                </div>
+
+                <div class="space-y-6">
+                    <!-- Project 1 -->
+                    <div class="bg-pop-yellow neo-border shadow-pop-xl rounded-3xl p-8 flex flex-col justify-between hover:translate-x-1 hover:translate-y-1 transition-all">
+                        <div>
+                            <div class="flex justify-between items-start mb-4">
+                                <span class="bg-pop-cream neo-border px-3 py-1 rounded-xl font-comic font-bold text-xs shadow-pop-sm">AI Platform</span>
+                                <span class="font-display font-extrabold text-xl">01</span>
+                            </div>
+                            <h3 class="font-display text-2xl font-extrabold mb-3">Agentic Workflow OS</h3>
+                            <p class="font-medium text-pop-dark/90 mb-6">
+                                Multi-agent orchestration system built with Next.js, Node.js, and PostgreSQL for instantaneous research and code generation.
+                            </p>
+                        </div>
+                        <div>
+                            <div class="flex flex-wrap gap-2 mb-6">
+                                <span class="bg-white neo-border px-3 py-1 rounded-lg text-xs font-bold font-comic">Next.js</span>
+                                <span class="bg-white neo-border px-3 py-1 rounded-lg text-xs font-bold font-comic">PostgreSQL</span>
+                                <span class="bg-white neo-border px-3 py-1 rounded-lg text-xs font-bold font-comic">Tailwind CSS</span>
+                            </div>
+                            <a href="https://github.com/nabssku" target="_blank" class="inline-flex items-center gap-2 bg-pop-dark text-pop-cream font-display font-bold px-5 py-2.5 neo-border rounded-xl shadow-pop-sm hover:bg-pop-orange hover:text-pop-dark transition-colors">
+                                View Repository ➔
+                            </a>
+                        </div>
+                    </div>
+
+                    <!-- Project 2 -->
+                    <div class="bg-pop-blue neo-border shadow-pop-xl rounded-3xl p-8 flex flex-col justify-between hover:translate-x-1 hover:translate-y-1 transition-all">
+                        <div>
+                            <div class="flex justify-between items-start mb-4">
+                                <span class="bg-pop-cream neo-border px-3 py-1 rounded-xl font-comic font-bold text-xs shadow-pop-sm">E-Commerce</span>
+                                <span class="font-display font-extrabold text-xl">02</span>
+                            </div>
+                            <h3 class="font-display text-2xl font-extrabold mb-3">DevFlow Commerce</h3>
+                            <p class="font-medium text-pop-dark/90 mb-6">
+                                High-speed digital asset marketplace with Cloudinary optimization and Prisma ORM.
+                            </p>
+                        </div>
+                        <div>
+                            <div class="flex flex-wrap gap-2 mb-6">
+                                <span class="bg-white neo-border px-3 py-1 rounded-lg text-xs font-bold font-comic">React</span>
+                                <span class="bg-white neo-border px-3 py-1 rounded-lg text-xs font-bold font-comic">Express</span>
+                            </div>
+                            <a href="https://github.com/nabssku" target="_blank" class="inline-flex items-center gap-2 bg-pop-dark text-pop-cream font-display font-bold px-5 py-2.5 neo-border rounded-xl shadow-pop-sm hover:bg-pop-orange hover:text-pop-dark transition-colors">
+                                View Repository ➔
+                            </a>
+                        </div>
+                    </div>
+
+                    <!-- Project 3 -->
+                    <div class="bg-pop-green neo-border shadow-pop-xl rounded-3xl p-8 flex flex-col justify-between hover:translate-x-1 hover:translate-y-1 transition-all">
+                        <div>
+                            <div class="flex justify-between items-start mb-4">
+                                <span class="bg-pop-cream neo-border px-3 py-1 rounded-xl font-comic font-bold text-xs shadow-pop-sm">Tooling</span>
+                                <span class="font-display font-extrabold text-xl">03</span>
+                            </div>
+                            <h3 class="font-display text-2xl font-extrabold mb-3">Neo CLI Assistant</h3>
+                            <p class="font-medium text-pop-dark/90 mb-6">
+                                Terminal companion tool for automated scaffolding and git workflow management.
+                            </p>
+                        </div>
+                        <div>
+                            <div class="flex flex-wrap gap-2 mb-6">
+                                <span class="bg-white neo-border px-3 py-1 rounded-lg text-xs font-bold font-comic">Node.js</span>
+                                <span class="bg-white neo-border px-3 py-1 rounded-lg text-xs font-bold font-comic">Git</span>
+                            </div>
+                            <a href="https://github.com/nabssku" target="_blank" class="inline-flex items-center gap-2 bg-pop-dark text-pop-cream font-display font-bold px-5 py-2.5 neo-border rounded-xl shadow-pop-sm hover:bg-pop-orange hover:text-pop-dark transition-colors">
+                                View Repository ➔
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Skills Section -->
+            <section id="skills" class="scroll-mt-10">
+                <div class="bg-white neo-border shadow-pop-xl rounded-3xl p-8">
+                    <span class="bg-pop-blue neo-border px-3 py-1 rounded-lg font-comic font-bold text-xs shadow-pop-sm inline-block mb-3">03 / EXPERTISE</span>
+                    <h2 class="font-display text-3xl font-extrabold mb-6">Tech Stack & Proficiency</h2>
+                    
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                        <div class="bg-pop-cream neo-border p-4 rounded-2xl shadow-pop-sm flex items-center justify-between">
+                            <span class="font-display font-bold">React & Next.js</span>
+                            <span class="w-3 h-3 bg-pop-orange rounded-full border border-black"></span>
+                        </div>
+                        <div class="bg-pop-cream neo-border p-4 rounded-2xl shadow-pop-sm flex items-center justify-between">
+                            <span class="font-display font-bold">Node.js & Express</span>
+                            <span class="w-3 h-3 bg-pop-blue rounded-full border border-black"></span>
+                        </div>
+                        <div class="bg-pop-cream neo-border p-4 rounded-2xl shadow-pop-sm flex items-center justify-between">
+                            <span class="font-display font-bold">PostgreSQL & Prisma</span>
+                            <span class="w-3 h-3 bg-pop-green rounded-full border border-black"></span>
+                        </div>
+                        <div class="bg-pop-cream neo-border p-4 rounded-2xl shadow-pop-sm flex items-center justify-between">
+                            <span class="font-display font-bold">Tailwind CSS</span>
+                            <span class="w-3 h-3 bg-pop-yellow rounded-full border border-black"></span>
+                        </div>
+                        <div class="bg-pop-cream neo-border p-4 rounded-2xl shadow-pop-sm flex items-center justify-between">
+                            <span class="font-display font-bold">Docker & Git</span>
+                            <span class="w-3 h-3 bg-pop-pink rounded-full border border-black"></span>
+                        </div>
+                        <div class="bg-pop-cream neo-border p-4 rounded-2xl shadow-pop-sm flex items-center justify-between">
+                            <span class="font-display font-bold">Cloudinary & APIs</span>
+                            <span class="w-3 h-3 bg-pop-purple rounded-full border border-black"></span>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Contact Section -->
+            <section id="contact" class="scroll-mt-10">
+                <div class="bg-pop-yellow neo-border shadow-pop-xl rounded-3xl p-8">
+                    <span class="bg-pop-cream neo-border px-3 py-1 rounded-lg font-comic font-bold text-xs shadow-pop-sm inline-block mb-3">04 / CONTACT</span>
+                    <h2 class="font-display text-3xl font-extrabold mb-4">Let's Build Together</h2>
+                    <p class="font-medium text-pop-dark/90 mb-6">
+                        Got a project, SaaS idea, or opportunity? Drop me a message below or email <a href="mailto:nabilsahsadabisnis@gmail.com" class="underline font-bold">nabilsahsadabisnis@gmail.com</a>.
+                    </p>
+
+                    <form id="contact-form" class="flex flex-col gap-4">
+                        <div>
+                            <label class="block font-display font-bold mb-2">Your Name</label>
+                            <input type="text" required placeholder="John Doe" class="w-full neo-border px-4 py-3 rounded-xl font-medium focus:outline-none bg-white">
+                        </div>
+                        <div>
+                            <label class="block font-display font-bold mb-2">Email Address</label>
+                            <input type="email" required placeholder="john@example.com" class="w-full neo-border px-4 py-3 rounded-xl font-medium focus:outline-none bg-white">
+                        </div>
+                        <div>
+                            <label class="block font-display font-bold mb-2">Message</label>
+                            <textarea rows="4" required placeholder="Project details..." class="w-full neo-border px-4 py-3 rounded-xl font-medium focus:outline-none bg-white"></textarea>
+                        </div>
+                        <button type="submit" class="w-full bg-pop-dark text-pop-cream font-display font-bold py-4 neo-border shadow-pop rounded-xl hover:bg-pop-orange hover:text-pop-dark transition-colors">
+                            Send Message 🚀
+                        </button>
+                    </form>
+                    <div id="form-success" class="hidden mt-4 bg-pop-green neo-border p-4 rounded-xl text-center font-comic font-bold shadow-pop-sm">
+                        🎉 Thank you! Your message has been sent successfully.
+                    </div>
+                </div>
+            </section>
+
+        </main>
+    </div>
+
+    <script>
+        // Contact Form Submission Mock
+        const form = document.getElementById('contact-form');
+        const successBox = document.getElementById('form-success');
+        form.addEventListener('submit', (e) => {
+            e.preventDefault();
+            form.reset();
+            successBox.classList.remove('hidden');
+            setTimeout(() => {
+                successBox.classList.add('hidden');
+            }, 5000);
+        });
+
+        // Intersection Observer to highlight active sidebar nav links on scroll
+        const observerOptions = {
+            root: null,
+            rootMargin: '0px 0px -50% 0px',
+            threshold: 0
+        };
+
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    const id = entry.target.getAttribute('id');
+                    document.querySelectorAll('.nav-link').forEach(link => {
+                        link.classList.remove('active-nav');
+                        if (link.getAttribute('href') === `#${id}`) {
+                            link.classList.add('active-nav');
+                        }
+                    });
+                }
+            });
+        }, observerOptions);
+
+        document.querySelectorAll('section[id]').forEach((section) => {
+            observer.observe(section);
+        });
+    </script>
+</body>
+</html>

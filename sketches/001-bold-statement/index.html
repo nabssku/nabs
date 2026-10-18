@@ -1,0 +1,419 @@
+<!DOCTYPE html>
+<html lang="id" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Nabil Sahsada Suratno — Full-Stack & AI Developer (Bold Statement)</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;600;700&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Space+Grotesk:wght@500;700&display=swap" rel="stylesheet">
+    <script>
+        tailwind.config = {
+          theme: {
+            extend: {
+              colors: {
+                'pop-yellow': '#FDE047',
+                'pop-orange': '#FB923C',
+                'pop-blue': '#93C5FD',
+                'pop-green': '#86EFAC',
+                'pop-pink': '#F472B6',
+                'pop-purple': '#C084FC',
+                'pop-cream': '#FFFDF7',
+                'pop-dark': '#18181B',
+              },
+              fontFamily: {
+                display: ['Space Grotesk', 'sans-serif'],
+                sans: ['Plus Jakarta Sans', 'sans-serif'],
+                comic: ['Fredoka', 'cursive'],
+              },
+              boxShadow: {
+                'pop-sm': '2px 2px 0px 0px rgba(0,0,0,1)',
+                'pop': '4px 4px 0px 0px rgba(0,0,0,1)',
+                'pop-lg': '6px 6px 0px 0px rgba(0,0,0,1)',
+                'pop-xl': '8px 8px 0px 0px rgba(0,0,0,1)',
+              }
+            }
+          }
+        }
+    </script>
+    <style>
+        .neo-border { border: 3px solid #18181B; }
+        .neo-border-t { border-top: 3px solid #18181B; }
+        .neo-border-b { border-bottom: 3px solid #18181B; }
+        .neo-border-l { border-left: 3px solid #18181B; }
+        .neo-border-r { border-right: 3px solid #18181B; }
+        @keyframes float {
+            0%, 100% { transform: translateY(0px) rotate(0deg); }
+            50% { transform: translateY(-8px) rotate(2deg); }
+        }
+        .animate-float { animation: float 4s ease-in-out infinite; }
+    </style>
+</head>
+<body class="bg-pop-cream text-pop-dark font-sans selection:bg-pop-yellow selection:text-pop-dark pb-20">
+
+    <!-- Floating Sticker Elements -->
+    <div class="fixed bottom-6 right-6 z-50 hidden md:flex flex-col gap-3">
+        <div class="bg-pop-pink neo-border shadow-pop px-4 py-2 rounded-xl font-comic text-sm font-bold animate-float flex items-center gap-2">
+            <span>🚀</span> Available for Hire!
+        </div>
+    </div>
+
+    <!-- Navbar -->
+    <header class="sticky top-0 z-40 bg-pop-cream neo-border-b">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-20 flex items-center justify-between">
+            <a href="#" class="font-display text-2xl font-bold tracking-tight bg-pop-yellow px-3 py-1 neo-border shadow-pop-sm rounded-xl hover:translate-x-0.5 hover:translate-y-0.5 hover:shadow-none transition-all">
+                @nabssku<span class="text-pop-orange">.</span>
+            </a>
+            
+            <nav class="hidden md:flex items-center gap-6 font-display font-bold text-lg">
+                <a href="#about" class="hover:text-pop-orange transition-colors">About</a>
+                <a href="#projects" class="hover:text-pop-orange transition-colors">Projects</a>
+                <a href="#skills" class="hover:text-pop-orange transition-colors">Skills</a>
+                <a href="#contact" class="bg-pop-blue px-4 py-2 neo-border shadow-pop-sm rounded-xl hover:translate-x-0.5 hover:translate-y-0.5 hover:shadow-none transition-all">Let's Talk ☕</a>
+            </nav>
+
+            <button id="menu-btn" class="md:hidden bg-pop-yellow neo-border p-2 rounded-xl shadow-pop-sm">
+                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16m-7 6h7"></path></svg>
+            </button>
+        </div>
+        <!-- Mobile Menu -->
+        <div id="mobile-menu" class="hidden md:hidden bg-pop-cream neo-border-b px-6 py-4 flex flex-col gap-4 font-display font-bold">
+            <a href="#about" class="mobile-link">About</a>
+            <a href="#projects" class="mobile-link">Projects</a>
+            <a href="#skills" class="mobile-link">Skills</a>
+            <a href="#contact" class="text-pop-orange">Let's Talk ☕</a>
+        </div>
+    </header>
+
+    <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        
+        <!-- Hero Section: Bold Statement (90vh min) -->
+        <section class="min-h-[90vh] flex flex-col justify-center py-12 lg:py-20">
+            <div class="inline-flex items-center gap-2 bg-pop-green neo-border px-4 py-2 rounded-2xl shadow-pop-sm w-fit mb-6 font-comic text-sm md:text-base font-bold animate-float">
+                <span class="w-3 h-3 bg-green-600 rounded-full border border-black animate-ping"></span>
+                Malang, Indonesia • Full-Stack & AI Developer
+            </div>
+
+            <h1 class="font-display text-5xl sm:text-7xl lg:text-8xl font-extrabold tracking-tight leading-[1.05] mb-8">
+                BUILDING <span class="bg-pop-yellow px-2 neo-border rounded-xl shadow-pop inline-block rotate-[-1deg]">SCALABLE</span> WEB APPS & <span class="bg-pop-pink px-2 neo-border rounded-xl shadow-pop inline-block rotate-[1deg]">AI AGENTS</span>.
+            </h1>
+
+            <p class="text-xl sm:text-2xl font-medium max-w-3xl mb-10 text-pop-dark/90">
+                Hi, I'm <strong class="bg-pop-blue px-2 py-0.5 neo-border rounded-lg">Nabil Sahsada Suratno</strong>. Informatics student at UMM, crafting robust SaaS platforms and intelligent agentic workflows with high-impact brutalist aesthetics.
+            </p>
+
+            <div class="flex flex-wrap gap-4 items-center">
+                <a href="#projects" class="bg-pop-orange text-pop-dark font-display font-bold text-lg px-8 py-4 neo-border shadow-pop-lg rounded-2xl hover:translate-x-1 hover:translate-y-1 hover:shadow-pop transition-all flex items-center gap-3">
+                    Explore Projects <span>⚡</span>
+                </a>
+                <a href="#contact" class="bg-pop-purple text-pop-dark font-display font-bold text-lg px-8 py-4 neo-border shadow-pop-lg rounded-2xl hover:translate-x-1 hover:translate-y-1 hover:shadow-pop transition-all">
+                    Get in Touch 📬
+                </a>
+            </div>
+
+            <!-- Sticker Strip Stats -->
+            <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mt-16 pt-12 neo-border-t">
+                <div class="bg-pop-yellow neo-border p-4 rounded-2xl shadow-pop">
+                    <div class="font-display text-3xl md:text-4xl font-extrabold">3+</div>
+                    <div class="text-sm font-bold uppercase font-comic tracking-wider">Years Coding</div>
+                </div>
+                <div class="bg-pop-blue neo-border p-4 rounded-2xl shadow-pop">
+                    <div class="font-display text-3xl md:text-4xl font-extrabold">15+</div>
+                    <div class="text-sm font-bold uppercase font-comic tracking-wider">Web Apps Built</div>
+                </div>
+                <div class="bg-pop-green neo-border p-4 rounded-2xl shadow-pop">
+                    <div class="font-display text-3xl md:text-4xl font-extrabold">100%</div>
+                    <div class="text-sm font-bold uppercase font-comic tracking-wider">Client Dedication</div>
+                </div>
+                <div class="bg-pop-pink neo-border p-4 rounded-2xl shadow-pop">
+                    <div class="font-display text-3xl md:text-4xl font-extrabold">UMM</div>
+                    <div class="text-sm font-bold uppercase font-comic tracking-wider">Informatics Student</div>
+                </div>
+            </div>
+        </section>
+
+        <!-- About Section: 60% text, large avatar -->
+        <section id="about" class="py-20 neo-border-t">
+            <div class="bg-white neo-border shadow-pop-xl rounded-3xl p-8 md:p-12">
+                <div class="inline-block bg-pop-purple neo-border px-4 py-1 rounded-xl font-comic font-bold text-sm mb-6 shadow-pop-sm">
+                    WHO AM I?
+                </div>
+                
+                <div class="grid grid-cols-1 lg:grid-cols-12 gap-10 items-center">
+                    <!-- Avatar Box (40%) -->
+                    <div class="lg:col-span-5 flex flex-col items-center">
+                        <div class="w-full aspect-square bg-pop-yellow neo-border shadow-pop-lg rounded-3xl overflow-hidden relative group">
+                            <div class="absolute inset-0 bg-pop-orange/20 mix-blend-multiply group-hover:bg-transparent transition-all"></div>
+                            <div class="w-full h-full flex items-center justify-center font-display font-extrabold text-7xl text-pop-dark bg-gradient-to-br from-pop-yellow to-pop-orange">
+                                NS
+                            </div>
+                            <div class="absolute bottom-4 left-4 right-4 bg-pop-cream neo-border px-4 py-2 rounded-xl text-center font-comic font-bold shadow-pop-sm">
+                                Nabil Sahsada Suratno 🎯
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Text Content (60%) -->
+                    <div class="lg:col-span-7 flex flex-col gap-6">
+                        <h2 class="font-display text-3xl sm:text-4xl font-extrabold leading-tight">
+                            Passionate developer combining software engineering rigors with playful digital art.
+                        </h2>
+                        <p class="text-lg text-pop-dark/80 font-medium">
+                            I'm an Informatics Engineering student at Universitas Muhammadiyah Malang (UMM) and an SMK RPL graduate. My core expertise lies in building full-stack web applications, robust APIs, and intelligent multi-agent systems.
+                        </p>
+                        <p class="text-lg text-pop-dark/80 font-medium">
+                            Whether it's sleek frontend interfaces with Tailwind CSS, scalable backends with Node.js and PostgreSQL, or cloud deployments, I bring meticulous detail and fearless styling to every project.
+                        </p>
+
+                        <div class="flex flex-wrap gap-3 pt-4">
+                            <span class="bg-pop-green neo-border px-3 py-1.5 rounded-xl font-comic font-bold text-sm shadow-pop-sm">🎓 UMM Informatics</span>
+                            <span class="bg-pop-blue neo-border px-3 py-1.5 rounded-xl font-comic font-bold text-sm shadow-pop-sm">💻 SMK RPL Graduate</span>
+                            <span class="bg-pop-pink neo-border px-3 py-1.5 rounded-xl font-comic font-bold text-sm shadow-pop-sm">🚀 Available for Hire</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Projects Section: Bento Grid Layout -->
+        <section id="projects" class="py-20 neo-border-t">
+            <div class="flex flex-col md:flex-row md:items-end justify-between mb-12 gap-4">
+                <div>
+                    <span class="bg-pop-orange neo-border px-4 py-1 rounded-xl font-comic font-bold text-sm shadow-pop-sm inline-block mb-3">PORTFOLIO</span>
+                    <h2 class="font-display text-4xl sm:text-5xl font-extrabold">FEATURED WORK</h2>
+                </div>
+                <p class="text-pop-dark/80 font-medium max-w-md">
+                    Selected SaaS applications, intelligent developer tooling, and high-performance web solutions.
+                </p>
+            </div>
+
+            <!-- Bento Grid of Projects -->
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                
+                <!-- Project 1: Large Span (2 cols) -->
+                <div class="md:col-span-2 bg-pop-yellow neo-border shadow-pop-xl rounded-3xl p-8 flex flex-col justify-between hover:translate-x-1 hover:translate-y-1 transition-all">
+                    <div>
+                        <div class="flex justify-between items-start mb-6">
+                            <span class="bg-pop-cream neo-border px-3 py-1 rounded-xl font-comic font-bold text-xs shadow-pop-sm">SaaS / AI Platform</span>
+                            <span class="font-display font-extrabold text-xl">01</span>
+                        </div>
+                        <h3 class="font-display text-3xl font-extrabold mb-3">Agentic Workflow OS</h3>
+                        <p class="font-medium text-pop-dark/90 mb-6">
+                            An intelligent multi-agent orchestration platform built with Next.js, Node.js, and PostgreSQL. Enables developers to spin up autonomous coding and research agents instantly.
+                        </p>
+                    </div>
+                    <div>
+                        <div class="flex flex-wrap gap-2 mb-6">
+                            <span class="bg-white neo-border px-3 py-1 rounded-lg text-xs font-bold font-comic">Next.js</span>
+                            <span class="bg-white neo-border px-3 py-1 rounded-lg text-xs font-bold font-comic">PostgreSQL</span>
+                            <span class="bg-white neo-border px-3 py-1 rounded-lg text-xs font-bold font-comic">Tailwind CSS</span>
+                        </div>
+                        <a href="https://github.com/nabssku" target="_blank" class="inline-flex items-center gap-2 bg-pop-dark text-pop-cream font-display font-bold px-5 py-2.5 neo-border rounded-xl shadow-pop-sm hover:bg-pop-orange hover:text-pop-dark transition-colors">
+                            View Repository ➔
+                        </a>
+                    </div>
+                </div>
+
+                <!-- Project 2 -->
+                <div class="bg-pop-blue neo-border shadow-pop-xl rounded-3xl p-8 flex flex-col justify-between hover:translate-x-1 hover:translate-y-1 transition-all">
+                    <div>
+                        <div class="flex justify-between items-start mb-6">
+                            <span class="bg-pop-cream neo-border px-3 py-1 rounded-xl font-comic font-bold text-xs shadow-pop-sm">Full-Stack Web</span>
+                            <span class="font-display font-extrabold text-xl">02</span>
+                        </div>
+                        <h3 class="font-display text-2xl font-extrabold mb-3">DevFlow Commerce</h3>
+                        <p class="font-medium text-pop-dark/90 mb-6">
+                            High-conversion digital marketplace for developers with automated Cloudinary asset optimization and secure Express/Prisma backend.
+                        </p>
+                    </div>
+                    <div>
+                        <div class="flex flex-wrap gap-2 mb-6">
+                            <span class="bg-white neo-border px-3 py-1 rounded-lg text-xs font-bold font-comic">React</span>
+                            <span class="bg-white neo-border px-3 py-1 rounded-lg text-xs font-bold font-comic">Express</span>
+                            <span class="bg-white neo-border px-3 py-1 rounded-lg text-xs font-bold font-comic">Prisma</span>
+                        </div>
+                        <a href="https://github.com/nabssku" target="_blank" class="inline-flex items-center gap-2 bg-pop-dark text-pop-cream font-display font-bold px-5 py-2.5 neo-border rounded-xl shadow-pop-sm hover:bg-pop-orange hover:text-pop-dark transition-colors">
+                            View Repository ➔
+                        </a>
+                    </div>
+                </div>
+
+                <!-- Project 3 -->
+                <div class="bg-pop-pink neo-border shadow-pop-xl rounded-3xl p-8 flex flex-col justify-between hover:translate-x-1 hover:translate-y-1 transition-all">
+                    <div>
+                        <div class="flex justify-between items-start mb-6">
+                            <span class="bg-pop-cream neo-border px-3 py-1 rounded-xl font-comic font-bold text-xs shadow-pop-sm">Utility / Tooling</span>
+                            <span class="font-display font-extrabold text-xl">03</span>
+                        </div>
+                        <h3 class="font-display text-2xl font-extrabold mb-3">Neo CLI Assistant</h3>
+                        <p class="font-medium text-pop-dark/90 mb-6">
+                            Terminal companion tool designed to automate scaffolding and git workflows with Neo-Brutalism ASCII feedback.
+                        </p>
+                    </div>
+                    <div>
+                        <div class="flex flex-wrap gap-2 mb-6">
+                            <span class="bg-white neo-border px-3 py-1 rounded-lg text-xs font-bold font-comic">Node.js</span>
+                            <span class="bg-white neo-border px-3 py-1 rounded-lg text-xs font-bold font-comic">Git</span>
+                        </div>
+                        <a href="https://github.com/nabssku" target="_blank" class="inline-flex items-center gap-2 bg-pop-dark text-pop-cream font-display font-bold px-5 py-2.5 neo-border rounded-xl shadow-pop-sm hover:bg-pop-orange hover:text-pop-dark transition-colors">
+                            View Repository ➔
+                        </a>
+                    </div>
+                </div>
+
+                <!-- Project 4: Large Span (2 cols) -->
+                <div class="md:col-span-2 bg-pop-green neo-border shadow-pop-xl rounded-3xl p-8 flex flex-col justify-between hover:translate-x-1 hover:translate-y-1 transition-all">
+                    <div>
+                        <div class="flex justify-between items-start mb-6">
+                            <span class="bg-pop-cream neo-border px-3 py-1 rounded-xl font-comic font-bold text-xs shadow-pop-sm">Enterprise Web App</span>
+                            <span class="font-display font-extrabold text-xl">04</span>
+                        </div>
+                        <h3 class="font-display text-3xl font-extrabold mb-3">Campus Collaboration Hub</h3>
+                        <p class="font-medium text-pop-dark/90 mb-6">
+                            Collaboration platform for UMM students featuring real-time discussion boards, project matchmaking, and Dockerized microservices architecture.
+                        </p>
+                    </div>
+                    <div>
+                        <div class="flex flex-wrap gap-2 mb-6">
+                            <span class="bg-white neo-border px-3 py-1 rounded-lg text-xs font-bold font-comic">Next.js</span>
+                            <span class="bg-white neo-border px-3 py-1 rounded-lg text-xs font-bold font-comic">Docker</span>
+                            <span class="bg-white neo-border px-3 py-1 rounded-lg text-xs font-bold font-comic">PostgreSQL</span>
+                        </div>
+                        <a href="https://github.com/nabssku" target="_blank" class="inline-flex items-center gap-2 bg-pop-dark text-pop-cream font-display font-bold px-5 py-2.5 neo-border rounded-xl shadow-pop-sm hover:bg-pop-orange hover:text-pop-dark transition-colors">
+                            View Repository ➔
+                        </a>
+                    </div>
+                </div>
+
+            </div>
+        </section>
+
+        <!-- Skills Section: Horizontal Sticker Strip -->
+        <section id="skills" class="py-20 neo-border-t">
+            <div class="text-center max-w-2xl mx-auto mb-12">
+                <span class="bg-pop-purple neo-border px-4 py-1 rounded-xl font-comic font-bold text-sm shadow-pop-sm inline-block mb-3">EXPERTISE</span>
+                <h2 class="font-display text-4xl sm:text-5xl font-extrabold">TECH STACK & SKILLS</h2>
+                <p class="text-pop-dark/80 font-medium mt-3">Tools and technologies I use to bring ideas from concept to robust production.</p>
+            </div>
+
+            <!-- Horizontal Sticker Strip (Interactive / Marquee feel) -->
+            <div class="bg-white neo-border shadow-pop-xl rounded-3xl p-8 overflow-hidden">
+                <div class="flex flex-wrap justify-center gap-4">
+                    <div class="bg-pop-yellow neo-border px-6 py-3 rounded-2xl shadow-pop font-display font-extrabold text-lg flex items-center gap-3 hover:-translate-y-1 transition-transform">
+                        <span>⚛️</span> React / Next.js
+                    </div>
+                    <div class="bg-pop-blue neo-border px-6 py-3 rounded-2xl shadow-pop font-display font-extrabold text-lg flex items-center gap-3 hover:-translate-y-1 transition-transform">
+                        <span>🟢</span> Node.js & Express
+                    </div>
+                    <div class="bg-pop-green neo-border px-6 py-3 rounded-2xl shadow-pop font-display font-extrabold text-lg flex items-center gap-3 hover:-translate-y-1 transition-transform">
+                        <span>🐘</span> PostgreSQL & Prisma
+                    </div>
+                    <div class="bg-pop-orange neo-border px-6 py-3 rounded-2xl shadow-pop font-display font-extrabold text-lg flex items-center gap-3 hover:-translate-y-1 transition-transform">
+                        <span>🎨</span> Tailwind CSS
+                    </div>
+                    <div class="bg-pop-pink neo-border px-6 py-3 rounded-2xl shadow-pop font-display font-extrabold text-lg flex items-center gap-3 hover:-translate-y-1 transition-transform">
+                        <span>🐳</span> Docker & Git
+                    </div>
+                    <div class="bg-pop-purple neo-border px-6 py-3 rounded-2xl shadow-pop font-display font-extrabold text-lg flex items-center gap-3 hover:-translate-y-1 transition-transform">
+                        <span>☁️</span> Cloudinary & APIs
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Contact Section -->
+        <section id="contact" class="py-20 neo-border-t">
+            <div class="bg-pop-yellow neo-border shadow-pop-xl rounded-3xl p-8 md:p-16 grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+                <div>
+                    <span class="bg-pop-cream neo-border px-4 py-1 rounded-xl font-comic font-bold text-sm shadow-pop-sm inline-block mb-4">LET'S CONNECT</span>
+                    <h2 class="font-display text-4xl sm:text-5xl font-extrabold mb-6">HAVE A PROJECT IN MIND?</h2>
+                    <p class="text-lg font-medium text-pop-dark/90 mb-8">
+                        Whether you need a full-stack web app, an AI agent system, or freelance collaboration, my inbox is always open. Let's build something epic together.
+                    </p>
+                    
+                    <div class="flex flex-col gap-4">
+                        <div class="bg-white neo-border p-4 rounded-2xl shadow-pop flex items-center gap-4">
+                            <span class="text-2xl">📧</span>
+                            <div>
+                                <div class="text-xs font-bold font-comic text-pop-dark/60">EMAIL</div>
+                                <a href="mailto:nabilsahsadabisnis@gmail.com" class="font-display font-bold hover:text-pop-orange transition-colors">nabilsahsadabisnis@gmail.com</a>
+                            </div>
+                        </div>
+                        <div class="bg-white neo-border p-4 rounded-2xl shadow-pop flex items-center gap-4">
+                            <span class="text-2xl">📍</span>
+                            <div>
+                                <div class="text-xs font-bold font-comic text-pop-dark/60">LOCATION</div>
+                                <div class="font-display font-bold">Malang, Jawa Timur, Indonesia</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Contact Form with Interactive Feedback -->
+                <div class="bg-white neo-border shadow-pop-xl rounded-3xl p-8">
+                    <form id="contact-form" class="flex flex-col gap-4">
+                        <div>
+                            <label class="block font-display font-bold mb-2">Your Name</label>
+                            <input type="text" required placeholder="John Doe" class="w-full neo-border px-4 py-3 rounded-xl font-medium focus:outline-none focus:ring-2 focus:ring-pop-orange bg-pop-cream">
+                        </div>
+                        <div>
+                            <label class="block font-display font-bold mb-2">Email Address</label>
+                            <input type="email" required placeholder="john@example.com" class="w-full neo-border px-4 py-3 rounded-xl font-medium focus:outline-none focus:ring-2 focus:ring-pop-orange bg-pop-cream">
+                        </div>
+                        <div>
+                            <label class="block font-display font-bold mb-2">Message</label>
+                            <textarea rows="4" required placeholder="Tell me about your project..." class="w-full neo-border px-4 py-3 rounded-xl font-medium focus:outline-none focus:ring-2 focus:ring-pop-orange bg-pop-cream"></textarea>
+                        </div>
+                        <button type="submit" class="w-full bg-pop-orange text-pop-dark font-display font-bold py-4 neo-border shadow-pop rounded-xl hover:translate-x-0.5 hover:translate-y-0.5 hover:shadow-none transition-all">
+                            Send Message 🚀
+                        </button>
+                    </form>
+                    <div id="form-success" class="hidden mt-4 bg-pop-green neo-border p-4 rounded-xl text-center font-comic font-bold shadow-pop-sm">
+                        🎉 Thank you! Your message has been sent successfully.
+                    </div>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-pop-dark text-pop-cream py-12 neo-border-t mt-20">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col md:flex-row items-center justify-between gap-6">
+            <div class="font-display font-bold text-xl bg-pop-yellow text-pop-dark px-4 py-2 neo-border rounded-xl shadow-pop">
+                @nabssku © 2026
+            </div>
+            <div class="flex gap-6 font-display font-bold">
+                <a href="https://github.com/nabssku" target="_blank" class="hover:text-pop-yellow transition-colors">GitHub</a>
+                <a href="https://instagram.com/nabsskun" target="_blank" class="hover:text-pop-yellow transition-colors">Instagram</a>
+                <a href="mailto:nabilsahsadabisnis@gmail.com" class="hover:text-pop-yellow transition-colors">Email</a>
+            </div>
+            <div class="font-comic text-sm text-pop-cream/70">
+                Crafted with Neo-Brutalism & Tailwind CSS
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // Mobile Menu Toggle
+        const menuBtn = document.getElementById('menu-btn');
+        const mobileMenu = document.getElementById('mobile-menu');
+        menuBtn.addEventListener('click', () => {
+            mobileMenu.classList.toggle('hidden');
+        });
+
+        // Contact Form Submission Mock
+        const form = document.getElementById('contact-form');
+        const successBox = document.getElementById('form-success');
+        form.addEventListener('submit', (e) => {
+            e.preventDefault();
+            form.reset();
+            successBox.classList.remove('hidden');
+            setTimeout(() => {
+                successBox.classList.add('hidden');
+            }, 5000);
+        });
+    </script>
+</body>
+</html>
