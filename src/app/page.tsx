@@ -7,7 +7,7 @@ import SkillsGrid from '@/components/SkillsGrid';
 import ContactSection from '@/components/ContactSection';
 import Footer from '@/components/Footer';
 import { sql, initDatabase } from '@/lib/db';
-import { PROFILE } from '@/lib/profile';
+import { getSiteProfile } from '@/lib/settings';
 import { Project, Skill, Experience } from '@/types';
 
 export const dynamic = 'force-dynamic';
@@ -15,21 +15,22 @@ export const dynamic = 'force-dynamic';
 export default async function HomePage() {
   await initDatabase();
 
-  const projectsRaw = await sql`
-    SELECT * FROM projects 
-    WHERE is_published = true 
-    ORDER BY sort_order ASC, created_at DESC;
-  `;
-
-  const skillsRaw = await sql`
-    SELECT * FROM skills 
-    ORDER BY category ASC, proficiency_level DESC;
-  `;
-
-  const experiencesRaw = await sql`
-    SELECT * FROM experiences 
-    ORDER BY sort_order ASC, start_year DESC;
-  `;
+  const [projectsRaw, skillsRaw, experiencesRaw, profile] = await Promise.all([
+    sql`
+      SELECT * FROM projects 
+      WHERE is_published = true 
+      ORDER BY sort_order ASC, created_at DESC;
+    `,
+    sql`
+      SELECT * FROM skills 
+      ORDER BY category ASC, proficiency_level DESC;
+    `,
+    sql`
+      SELECT * FROM experiences 
+      ORDER BY sort_order ASC, start_year DESC;
+    `,
+    getSiteProfile(),
+  ]);
 
   const projects = projectsRaw as unknown as Project[];
   const skills = skillsRaw as unknown as Skill[];
@@ -39,11 +40,11 @@ export default async function HomePage() {
     <div className="min-h-screen flex flex-col font-sans">
       <Navbar />
       <main className="flex-1">
-        <Hero profile={PROFILE} />
+        <Hero profile={profile} />
         <AboutExperience experiences={experiences} />
         <ProjectsShowcase projects={projects} />
         <SkillsGrid skills={skills} />
-        <ContactSection profile={PROFILE} />
+        <ContactSection profile={profile} />
       </main>
       <Footer />
     </div>

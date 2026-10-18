@@ -3,7 +3,7 @@
 import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { usePathname, useRouter } from 'next/navigation';
-import { LayoutDashboard, FolderGit2, Sparkles, GraduationCap, MessageSquare, LogOut, ArrowUpRight, Menu, X, Loader2 } from 'lucide-react';
+import { LayoutDashboard, FolderGit2, Sparkles, GraduationCap, MessageSquare, Settings2, LogOut, ArrowUpRight, Menu, X, Loader2 } from 'lucide-react';
 
 export default function AdminLayout({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
@@ -54,6 +54,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
     { label: 'Skills & Stack', href: '/admin/skills', icon: Sparkles },
     { label: 'Experiences', href: '/admin/experiences', icon: GraduationCap },
     { label: 'Inbox Messages', href: '/admin/messages', icon: MessageSquare },
+    { label: 'Profile Settings', href: '/admin/settings', icon: Settings2 },
   ];
 
   const handleLogout = async () => {

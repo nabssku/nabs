@@ -90,6 +90,34 @@ async function _doInitDatabase() {
       );
     `;
 
+    // 6. Site Settings Table
+    await sql`
+      CREATE TABLE IF NOT EXISTS site_settings (
+        key VARCHAR(100) PRIMARY KEY,
+        value TEXT NOT NULL,
+        updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
+      );
+    `;
+
+    // Seed default site settings if not exist
+    await sql`
+      INSERT INTO site_settings (key, value)
+      VALUES
+        ('profile_name', 'Nabil Sahsada Suratno'),
+        ('profile_handle', '@nabssku'),
+        ('profile_title', 'Full-Stack Web & AI Developer'),
+        ('profile_location', 'Malang, Jawa Timur, Indonesia'),
+        ('profile_status', '🟢 Available for Freelance & Full-time'),
+        ('profile_bio', 'Informatics Engineering student at UMM & Freelance Full-Stack Developer. I craft playful, high-performance web apps, SaaS platforms, and intelligent agent systems with clean code and comic-inspired aesthetics.'),
+        ('profile_avatar_url', 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=500&auto=format&fit=crop&q=80'),
+        ('profile_resume_url', '/resume_nabil.pdf'),
+        ('social_github', 'https://github.com/nabssku'),
+        ('social_instagram', 'https://instagram.com/nabsskun'),
+        ('social_linkedin', 'https://linkedin.com/in/nabssku'),
+        ('social_email', 'nabilsahsadabisnis@gmail.com')
+      ON CONFLICT (key) DO NOTHING;
+    `;
+
     // Check if admin user exists, if not seed it
     const existingUsers = await sql`SELECT id FROM users WHERE email = 'nabilsahsadabisnis@gmail.com' LIMIT 1;`;
     if (existingUsers.length === 0) {

@@ -25,6 +25,8 @@ export default function AdminProjectsPage() {
   const [sortOrder, setSortOrder] = useState(0);
   const [saving, setSaving] = useState(false);
   const [uploadingImage, setUploadingImage] = useState(false);
+  const [errorMsg, setErrorMsg] = useState<string | null>(null);
+  const [successMsg, setSuccessMsg] = useState<string | null>(null);
 
   const fileInputRef = useRef<HTMLInputElement>(null);
 
@@ -66,6 +68,8 @@ export default function AdminProjectsPage() {
     setRepoUrl('');
     setIsPublished(true);
     setSortOrder(0);
+    setErrorMsg(null);
+    setSuccessMsg(null);
     setModalOpen(true);
   };
 
@@ -82,6 +86,8 @@ export default function AdminProjectsPage() {
     setRepoUrl(proj.repo_url || '');
     setIsPublished(proj.is_published);
     setSortOrder(proj.sort_order || 0);
+    setErrorMsg(null);
+    setSuccessMsg(null);
     setModalOpen(true);
   };
 
@@ -97,6 +103,7 @@ export default function AdminProjectsPage() {
     if (!file) return;
 
     setUploadingImage(true);
+    setErrorMsg(null);
     try {
       const formData = new FormData();
       formData.append('file', file);
@@ -114,12 +121,13 @@ export default function AdminProjectsPage() {
 
       const data = await res.json();
       if (!res.ok) throw new Error(data.error || 'Upload gagal');
+      if (!data.url) throw new Error('Upload gagal: URL tidak ditemukan');
 
       setThumbnailUrl(data.url);
-      setCloudinaryPublicId(data.public_id);
+      setCloudinaryPublicId(data.public_id || '');
     } catch (err: any) {
       console.error(err);
-      alert(err.message || 'Gagal mengunggah gambar');
+      setErrorMsg(err.message || 'Gagal mengunggah gambar');
     } finally {
       setUploadingImage(false);
     }
@@ -127,6 +135,14 @@ export default function AdminProjectsPage() {
 
   const handleSave = async (e: React.FormEvent) => {
     e.preventDefault();
+    setErrorMsg(null);
+    setSuccessMsg(null);
+
+    if (!title.trim() || !slug.trim() || !summary.trim() || !thumbnailUrl.trim()) {
+      setErrorMsg('Harap isi semua field yang wajib (*): Judul, Slug, Summary, dan Thumbnail.');
+      return;
+    }
+
     setSaving(true);
 
     try {
@@ -164,12 +180,20 @@ export default function AdminProjectsPage() {
         return;
       }
 
-      setModalOpen(false);
-      fetchProjects();
-    } catch (err) {
+      const data = await res.json().catch(() => ({}));
+      if (!res.ok) {
+        throw new Error(data.error || 'Gagal menyimpan project');
+      }
+
+      setSuccessMsg('Proyek berhasil disimpan!');
+      setSaving(false);
+      setTimeout(() => {
+        setModalOpen(false);
+        fetchProjects();
+      }, 1500);
+    } catch (err: any) {
       console.error(err);
-      alert('Gagal menyimpan project');
-    } finally {
+      setErrorMsg(err.message || 'Gagal menyimpan project');
       setSaving(false);
     }
   };
@@ -298,6 +322,18 @@ export default function AdminProjectsPage() {
             </div>
 
             <form onSubmit={handleSave} className="p-6 overflow-y-auto space-y-4 bg-pop-cream flex-1 text-xs sm:text-sm">
+              {errorMsg && (
+                <div className="p-3 bg-rose-100 border-[2px] border-black rounded-xl text-rose-800 text-xs font-bold flex items-center justify-between">
+                  <span>{errorMsg}</span>
+                  <button type="button" onClick={() => setErrorMsg(null)} className="text-rose-900 font-bold text-sm">×</button>
+                </div>
+              )}
+              {successMsg && (
+                <div className="p-3 bg-emerald-100 border-[2px] border-black rounded-xl text-emerald-800 text-xs font-bold">
+                  {successMsg}
+                </div>
+              )}
+
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div>
                   <label className="block font-bold text-slate-700 mb-1">Judul Proyek *</label>
@@ -343,12 +379,12 @@ export default function AdminProjectsPage() {
                 </div>
               </div>
 
-              {/* Cloudinary Media Uploader */}
+              {/* Cloudinary Media Uploader / URL Fallback */}
               <div className="p-4 bg-white border-[2px] border-black rounded-2xl shadow-pop-sm space-y-3">
                 <div className="flex items-center justify-between">
                   <label className="font-bold text-slate-700 flex items-center gap-1.5">
                     <UploadCloud className="w-4 h-4 text-pop-blue" />
-                    <span>Thumbnail (Cloudinary CDN) *</span>
+                    <span>Thumbnail (Cloudinary / URL) *</span>
                   </label>
                   <input
                     type="file"
@@ -384,7 +420,7 @@ export default function AdminProjectsPage() {
                   <input
                     type="url"
                     required
-                    placeholder="https://res.cloudinary.com/..."
+                    placeholder="https://res.cloudinary.com/... atau URL gambar eksternal"
                     value={thumbnailUrl}
                     onChange={(e) => setThumbnailUrl(e.target.value)}
                     className="w-full px-3 py-2 bg-pop-cream border-[2px] border-black rounded-xl font-mono text-xs"
