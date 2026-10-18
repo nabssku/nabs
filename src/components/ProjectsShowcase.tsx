@@ -1,6 +1,7 @@
 'use client';
 
 import React, { useState } from 'react';
+import Image from 'next/image';
 import { ExternalLink, Github, ArrowUpRight, FolderGit2 } from 'lucide-react';
 import ProjectModal from './ProjectModal';
 import { Project } from '@/types';
@@ -65,10 +66,12 @@ export default function ProjectsShowcase({ projects }: ProjectsProps) {
               {/* Thumbnail Container */}
               <div>
                 <div className="relative aspect-video border-b-[3px] border-black overflow-hidden bg-slate-100">
-                  <img
+                  <Image
                     src={project.thumbnail_url}
                     alt={project.title}
-                    className="w-full h-full object-cover group-hover:scale-105 transition duration-300"
+                    fill
+                    sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 33vw"
+                    className="object-cover group-hover:scale-105 transition duration-300"
                   />
                   <div className="absolute top-3 right-3 bg-pop-yellow border-[2px] border-black px-2.5 py-0.5 rounded-lg font-display font-bold text-[10px] uppercase shadow-pop-sm">
                     {project.category || 'Full-Stack'}

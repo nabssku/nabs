@@ -1,6 +1,7 @@
 'use client';
 
 import React from 'react';
+import Image from 'next/image';
 import { X, ExternalLink, Github } from 'lucide-react';
 import { Project } from '@/types';
 
@@ -37,10 +38,12 @@ export default function ProjectModal({ project, onClose }: ProjectModalProps) {
         <div className="p-6 overflow-y-auto space-y-6 flex-1 bg-pop-cream">
           {/* Thumbnail / Mockup */}
           <div className="border-[3px] border-black rounded-2xl overflow-hidden shadow-pop bg-slate-100 relative group aspect-video">
-            <img
+            <Image
               src={project.thumbnail_url}
               alt={project.title}
-              className="w-full h-full object-cover"
+              fill
+              sizes="(max-width: 672px) 100vw, 672px"
+              className="object-cover"
             />
           </div>
 

@@ -1,9 +1,10 @@
 import React from 'react';
+import Image from 'next/image';
 import Navbar from '@/components/Navbar';
 import Footer from '@/components/Footer';
 import { sql } from '@/lib/db';
 import { notFound } from 'next/navigation';
-import { ArrowLeft, ExternalLink, Github, Sparkles, FolderGit2, CheckCircle } from 'lucide-react';
+import { ArrowLeft, ExternalLink, Github } from 'lucide-react';
 import Link from 'next/link';
 import type { Metadata } from 'next';
 
@@ -71,11 +72,14 @@ export default async function ProjectDetailPage({ params }: { params: { slug: st
           </div>
 
           {/* Thumbnail */}
-          <div className="border-[3px] border-black rounded-2xl overflow-hidden aspect-video shadow-pop bg-slate-100">
-            <img
+          <div className="relative border-[3px] border-black rounded-2xl overflow-hidden aspect-video shadow-pop bg-slate-100">
+            <Image
               src={project.thumbnail_url}
               alt={project.title}
-              className="w-full h-full object-cover"
+              fill
+              sizes="(max-width: 896px) 100vw, 896px"
+              priority
+              className="object-cover"
             />
           </div>
 

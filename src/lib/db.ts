@@ -1,14 +1,23 @@
 import { neon } from '@neondatabase/serverless';
-import bcrypt from 'bcryptjs';
 
 const connectionString = process.env.DATABASE_URL || 'postgresql://neondb_owner:npg_DPikGA6XONT2@ep-misty-violet-avt0zwb0-pooler.c-11.us-east-1.aws.neon.tech/neondb?channel_binding=require&sslmode=require';
 
 export const sql = neon(connectionString);
 
 /**
- * Initialize all database tables and seed default portfolio data
+ * Initialize all database tables and seed default portfolio data.
+ * Uses a module-level guard so it only runs once per server lifecycle.
  */
-export async function initDatabase() {
+let _initPromise: Promise<{ success: boolean; error?: unknown }> | null = null;
+
+export function initDatabase() {
+  if (!_initPromise) {
+    _initPromise = _doInitDatabase();
+  }
+  return _initPromise;
+}
+
+async function _doInitDatabase() {
   try {
     // 1. Users Table (Admin)
     await sql`
