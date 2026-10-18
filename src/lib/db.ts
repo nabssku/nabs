@@ -17,6 +17,10 @@ export function initDatabase() {
   return _initPromise;
 }
 
+export function resetInitGuard() {
+  _initPromise = null;
+}
+
 async function _doInitDatabase() {
   try {
     // 1. Users Table (Admin)
