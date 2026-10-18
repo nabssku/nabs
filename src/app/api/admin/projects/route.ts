@@ -43,14 +43,16 @@ export async function POST(req: NextRequest) {
       sort_order,
     } = body;
 
+    const projectId = `proj_${Date.now()}_${Math.random().toString(36).substring(2, 8)}`;
+
     const inserted = await sql`
       INSERT INTO projects (
-        title, slug, summary, content_markdown,
+        id, title, slug, summary, content_markdown,
         thumbnail_url, cloudinary_public_id, category, demo_url, repo_url,
         is_published, sort_order
       )
       VALUES (
-        ${title}, ${slug}, ${summary}, ${content_markdown || ''},
+        ${projectId}, ${title}, ${slug}, ${summary}, ${content_markdown || ''},
         ${thumbnail_url}, ${cloudinary_public_id || ''}, ${category || 'Web App'}, ${demo_url || ''}, ${repo_url || ''},
         ${is_published ?? true}, ${sort_order ?? 0}
       )
