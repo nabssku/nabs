@@ -133,9 +133,10 @@ async function _doInitDatabase() {
     const existingProjects = await sql`SELECT id FROM projects LIMIT 1;`;
     if (existingProjects.length === 0) {
       await sql`
-        INSERT INTO projects (title, slug, summary, content_markdown, thumbnail_url, category, demo_url, repo_url, is_featured, is_published, sort_order)
+        INSERT INTO projects (id, title, slug, summary, content_markdown, thumbnail_url, category, demo_url, repo_url, is_featured, is_published, sort_order)
         VALUES 
         (
+          'proj_seed_001',
           'Alacart — Smart POS & Cashier System',
           'alacart-pos',
           'Sistem kasir multi-outlet berbasis web responsif dengan integrasi QRIS dynamic dan laporan keuangan real-time.',
@@ -149,6 +150,7 @@ async function _doInitDatabase() {
           1
         ),
         (
+          'proj_seed_002',
           'Selasar Wonosalam — Eco Tourism Portal',
           'selasar-wonosalam',
           'Platform informasi destinasi ekowisata, reservasi villa, dan pusat oleh-oleh khas Wonosalam berbasis Next.js.',
@@ -162,6 +164,7 @@ async function _doInitDatabase() {
           2
         ),
         (
+          'proj_seed_003',
           'AUinAja — AI Fanfiction & Chat Mockup SaaS',
           'auinaja-generator',
           'Generator mockup chat WhatsApp, X/Twitter, and Instagram interaktif untuk kreator Alternate Universe (AU).',
@@ -181,20 +184,20 @@ async function _doInitDatabase() {
     const existingSkills = await sql`SELECT id FROM skills LIMIT 1;`;
     if (existingSkills.length === 0) {
       await sql`
-        INSERT INTO skills (name, category, proficiency_level)
+        INSERT INTO skills (id, name, category, proficiency_level)
         VALUES
-        ('React & Next.js 15', 'frontend', 95),
-        ('TypeScript', 'frontend', 90),
-        ('Tailwind CSS', 'frontend', 95),
-        ('Framer Motion', 'frontend', 85),
-        ('Node.js & Express', 'backend', 88),
-        ('REST & GraphQL APIs', 'backend', 90),
-        ('PostgreSQL & Neon DB', 'database', 92),
-        ('Prisma & Drizzle ORM', 'database', 88),
-        ('Cloudinary CDN', 'tools', 90),
-        ('Git & GitHub Actions', 'tools', 88),
-        ('Vercel Edge Deploy', 'tools', 92),
-        ('BorderPay QRIS', 'tools', 95);
+        ('sk_seed_01', 'React & Next.js 15', 'frontend', 95),
+        ('sk_seed_02', 'TypeScript', 'frontend', 90),
+        ('sk_seed_03', 'Tailwind CSS', 'frontend', 95),
+        ('sk_seed_04', 'Framer Motion', 'frontend', 85),
+        ('sk_seed_05', 'Node.js & Express', 'backend', 88),
+        ('sk_seed_06', 'REST & GraphQL APIs', 'backend', 90),
+        ('sk_seed_07', 'PostgreSQL & Neon DB', 'database', 92),
+        ('sk_seed_08', 'Prisma & Drizzle ORM', 'database', 88),
+        ('sk_seed_09', 'Cloudinary CDN', 'tools', 90),
+        ('sk_seed_10', 'Git & GitHub Actions', 'tools', 88),
+        ('sk_seed_11', 'Vercel Edge Deploy', 'tools', 92),
+        ('sk_seed_12', 'BorderPay QRIS', 'tools', 95);
       `;
     }
 
@@ -202,9 +205,10 @@ async function _doInitDatabase() {
     const existingExp = await sql`SELECT id FROM experiences LIMIT 1;`;
     if (existingExp.length === 0) {
       await sql`
-        INSERT INTO experiences (title, institution, location, start_year, end_year, description, type, sort_order)
+        INSERT INTO experiences (id, title, institution, location, start_year, end_year, description, type, sort_order)
         VALUES
         (
+          'exp_seed_01',
           'S1 Informatika / Software Engineering',
           'Universitas Muhammadiyah Malang (UMM)',
           'Malang',
@@ -215,6 +219,7 @@ async function _doInitDatabase() {
           1
         ),
         (
+          'exp_seed_02',
           'Rekayasa Perangkat Lunak (RPL)',
           'SMKS Telkom Malang',
           'Malang',
@@ -225,6 +230,7 @@ async function _doInitDatabase() {
           2
         ),
         (
+          'exp_seed_03',
           'Full-Stack Freelance Developer',
           'LN Developer & Self-Employed',
           'Remote',
