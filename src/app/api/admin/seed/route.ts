@@ -1,5 +1,5 @@
 import { NextResponse } from 'next/server';
-import { sql, initDatabase, resetInitGuard } from '@/lib/db';
+import { sql } from '@/lib/db';
 
 export const dynamic = 'force-dynamic';
 
@@ -14,12 +14,100 @@ export async function GET(req: Request) {
   }
 
   try {
-    // Clear seeded tables
-    await sql`TRUNCATE TABLE projects, skills, experiences RESTART IDENTITY CASCADE;`;
+    // Clear tables (VARCHAR PKs have no sequences, no RESTART IDENTITY needed)
+    await sql`DELETE FROM projects;`;
+    await sql`DELETE FROM skills;`;
+    await sql`DELETE FROM experiences;`;
 
-    // Reset singleton guard so initDatabase re-runs the seed
-    resetInitGuard();
-    await initDatabase();
+    // Seed projects
+    await sql`
+      INSERT INTO projects (id, title, slug, summary, content_markdown, thumbnail_url, category, demo_url, repo_url, is_featured, is_published, sort_order)
+      VALUES
+      (
+        'proj_seed_001',
+        'Alacart — Smart POS & Cashier System',
+        'alacart-pos',
+        'Sistem kasir multi-outlet berbasis web responsif dengan integrasi QRIS dynamic dan laporan keuangan real-time.',
+        '## Tentang Alacart POS\n\nAlacart adalah aplikasi point-of-sale modern untuk UMKM F&B dan retail.',
+        'https://images.unsplash.com/photo-1556742049-0a67e5572263?q=80&w=800&auto=format&fit=crop',
+        'SaaS / POS',
+        'https://alacart.vercel.app',
+        'https://github.com/nabssku/alacart',
+        true, true, 1
+      ),
+      (
+        'proj_seed_002',
+        'Selasar Wonosalam — Eco Tourism Portal',
+        'selasar-wonosalam',
+        'Platform informasi destinasi ekowisata, reservasi villa, dan pusat oleh-oleh khas Wonosalam berbasis Next.js.',
+        '## Portal Ekowisata Wonosalam\n\nSistem direktori wisata terintegrasi dengan peta interaktif.',
+        'https://images.unsplash.com/photo-1469854523086-cc02fe5d8800?q=80&w=800&auto=format&fit=crop',
+        'Web App',
+        'https://selasar-wonosalam.vercel.app',
+        'https://github.com/nabssku/selasar-wonosalam',
+        true, true, 2
+      ),
+      (
+        'proj_seed_003',
+        'AUinAja — AI Fanfiction & Chat Mockup SaaS',
+        'auinaja-generator',
+        'Generator mockup chat WhatsApp, X/Twitter, and Instagram interaktif untuk kreator Alternate Universe (AU).',
+        '## AUinAja Platform\n\nPlatform visual storytelling untuk kreator AU di Twitter dan TikTok.',
+        'https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?q=80&w=800&auto=format&fit=crop',
+        'SaaS',
+        'https://auinaja.vercel.app',
+        'https://github.com/nabssku/auinaja',
+        true, true, 3
+      );
+    `;
+
+    // Seed skills
+    await sql`
+      INSERT INTO skills (id, name, category, proficiency_level)
+      VALUES
+      ('sk_seed_01', 'React & Next.js 15', 'frontend', 95),
+      ('sk_seed_02', 'TypeScript', 'frontend', 90),
+      ('sk_seed_03', 'Tailwind CSS', 'frontend', 95),
+      ('sk_seed_04', 'Framer Motion', 'frontend', 85),
+      ('sk_seed_05', 'Node.js & Express', 'backend', 88),
+      ('sk_seed_06', 'REST & GraphQL APIs', 'backend', 90),
+      ('sk_seed_07', 'PostgreSQL & Neon DB', 'database', 92),
+      ('sk_seed_08', 'Prisma & Drizzle ORM', 'database', 88),
+      ('sk_seed_09', 'Cloudinary CDN', 'tools', 90),
+      ('sk_seed_10', 'Git & GitHub Actions', 'tools', 88),
+      ('sk_seed_11', 'Vercel Edge Deploy', 'tools', 92),
+      ('sk_seed_12', 'BorderPay QRIS', 'tools', 95);
+    `;
+
+    // Seed experiences
+    await sql`
+      INSERT INTO experiences (id, title, institution, location, start_year, end_year, description, type, sort_order)
+      VALUES
+      (
+        'exp_seed_01',
+        'S1 Informatika / Software Engineering',
+        'Universitas Muhammadiyah Malang (UMM)',
+        'Malang', '2024', 'Sekarang',
+        'Fokus riset rekayasa perangkat lunak, arsitektur cloud serverless, dan pengembangan antarmuka interaktif.',
+        'education', 1
+      ),
+      (
+        'exp_seed_02',
+        'Rekayasa Perangkat Lunak (RPL)',
+        'SMKS Telkom Malang',
+        'Malang', '2021', '2024',
+        'Mendalami fondasi pemrograman web, mobile app development, database design, dan software architecture.',
+        'education', 2
+      ),
+      (
+        'exp_seed_03',
+        'Full-Stack Freelance Developer',
+        'LN Developer & Self-Employed',
+        'Remote', '2023', 'Sekarang',
+        'Membangun sistem POS, platform SaaS, e-commerce, dan portal kustom untuk puluhan klien bisnis.',
+        'work', 3
+      );
+    `;
 
     const projectCount = await sql`SELECT count(*) as count FROM projects;`;
     const skillCount   = await sql`SELECT count(*) as count FROM skills;`;
@@ -35,6 +123,7 @@ export async function GET(req: Request) {
       },
     });
   } catch (error: any) {
+    console.error('Seed error:', error);
     return NextResponse.json({ error: error.message }, { status: 500 });
   }
 }
