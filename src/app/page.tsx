@@ -38,7 +38,7 @@ export default async function HomePage() {
 
   return (
     <div className="min-h-screen flex flex-col font-sans">
-      <Navbar />
+      <Navbar profile={profile} />
       <main className="flex-1">
         <Hero profile={profile} />
         <AboutExperience experiences={experiences} />
@@ -46,7 +46,7 @@ export default async function HomePage() {
         <SkillsGrid skills={skills} />
         <ContactSection profile={profile} />
       </main>
-      <Footer />
+      <Footer profile={profile} />
     </div>
   );
 }

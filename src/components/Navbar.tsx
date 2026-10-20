@@ -3,8 +3,13 @@
 import React, { useState } from 'react';
 import Link from 'next/link';
 import { Menu, X, Coffee } from 'lucide-react';
+import { Profile } from '@/types';
 
-export default function Navbar() {
+interface NavbarProps {
+  profile?: Profile;
+}
+
+export default function Navbar({ profile }: NavbarProps) {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
   const navLinks = [
@@ -15,6 +20,9 @@ export default function Navbar() {
     { label: 'Contact', href: '#contact' },
   ];
 
+  const brandName = profile?.name ? profile.name.split(' ')[0].toLowerCase() + 'SKU' : 'nabssku';
+  const brandTitle = profile?.title || 'Software Engineer';
+
   return (
     <header className="sticky top-0 z-40 bg-pop-cream/90 backdrop-blur-md border-b-[3px] border-black">
       <div className="max-w-6xl mx-auto px-4 sm:px-8 h-20 flex items-center justify-between">
@@ -22,14 +30,14 @@ export default function Navbar() {
         {/* Brand Logo Sticker */}
         <Link href="/" className="flex items-center gap-2.5 group">
           <div className="w-10 h-10 bg-pop-yellow border-[3px] border-black rounded-2xl flex items-center justify-center font-display font-black text-xl shadow-pop group-hover:rotate-6 group-hover:scale-105 transition">
-            N
+            {profile?.name ? profile.name.charAt(0) : 'N'}
           </div>
           <div className="flex flex-col">
             <span className="font-display font-black text-xl tracking-tight text-pop-dark group-hover:text-pop-orange transition">
-              nabssku<span className="text-pop-orange">.dev</span>
+              {brandName}<span className="text-pop-orange">.dev</span>
             </span>
-            <span className="text-[10px] font-bold text-slate-500 uppercase tracking-widest">
-              Software Engineer
+            <span className="text-[10px] font-bold text-slate-500 uppercase tracking-widest truncate max-w-[150px]">
+              {brandTitle}
             </span>
           </div>
         </Link>

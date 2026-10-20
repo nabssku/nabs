@@ -25,7 +25,8 @@ export async function getSiteProfile(): Promise<Profile> {
         email: map['social_email'] || PROFILE.socials.email,
       },
     };
-  } catch {
+  } catch (error) {
+    console.error('Error fetching site profile from DB:', error);
     return PROFILE; // fallback to static if DB fails
   }
 }
