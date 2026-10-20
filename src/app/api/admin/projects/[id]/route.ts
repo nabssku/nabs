@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import { sql } from '@/lib/db';
 import { getAdminSession } from '@/lib/auth';
 import { deleteFromCloudinary } from '@/lib/cloudinary';
+import { revalidatePath } from 'next/cache';
 
 export const dynamic = 'force-dynamic';
 
@@ -50,6 +51,9 @@ export async function PUT(
       RETURNING *;
     `;
 
+    revalidatePath('/');
+    revalidatePath('/projects');
+
     return NextResponse.json(updated[0]);
   } catch (err: any) {
     return NextResponse.json({ error: err.message }, { status: 500 });
@@ -67,14 +71,18 @@ export async function DELETE(
 
   try {
     const { id } = params;
-    
-    // Find project to check for cloudinary public_id
-    const existing = await sql`SELECT cloudinary_public_id FROM projects WHERE id = ${id} LIMIT 1;`;
-    if (existing.length > 0 && existing[0].cloudinary_public_id) {
-      await deleteFromCloudinary(existing[0].cloudinary_public_id);
+
+    // Optional: Delete image from Cloudinary if public_id exists
+    const proj = await sql`SELECT cloudinary_public_id FROM projects WHERE id = ${id};`;
+    if (proj.length > 0 && proj[0].cloudinary_public_id) {
+      await deleteFromCloudinary(proj[0].cloudinary_public_id as string);
     }
 
     await sql`DELETE FROM projects WHERE id = ${id};`;
+
+    revalidatePath('/');
+    revalidatePath('/projects');
+
     return NextResponse.json({ success: true });
   } catch (err: any) {
     return NextResponse.json({ error: err.message }, { status: 500 });

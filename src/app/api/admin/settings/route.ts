@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { sql } from '@/lib/db';
 import { getAdminSession } from '@/lib/auth';
+import { revalidatePath } from 'next/cache';
 
 export const dynamic = 'force-dynamic';
 
@@ -27,7 +28,6 @@ export async function POST(req: NextRequest) {
   
   try {
     const body = await req.json();
-    // body is { key: value, key: value, ... }
     for (const [key, value] of Object.entries(body)) {
       await sql`
         INSERT INTO site_settings (key, value, updated_at)
@@ -35,6 +35,9 @@ export async function POST(req: NextRequest) {
         ON CONFLICT (key) DO UPDATE SET value = ${value as string}, updated_at = NOW();
       `;
     }
+
+    revalidatePath('/');
+
     return NextResponse.json({ success: true, message: 'Settings berhasil disimpan!' });
   } catch (error: unknown) {
     const errorMessage = error instanceof Error ? error.message : 'Unknown error';
