@@ -35,7 +35,8 @@ export const sql: NeonQueryFunction<false, false> = new Proxy(
 
 /**
  * Initialize all database tables and seed default portfolio data.
- * Uses a module-level guard so it only runs once per server lifecycle.
+ * Uses a module-level guard so it only runs once per server lifecycle,
+ * and clears the guard on error so transient cold-start failures can recover.
  */
 let _initPromise: Promise<{ success: boolean; error?: unknown }> | null = null;
 
@@ -48,6 +49,55 @@ export function initDatabase() {
 
 export function resetInitGuard() {
   _initPromise = null;
+}
+
+/**
+ * Sync admin account credentials from ADMIN_EMAIL and ADMIN_PASSWORD env vars.
+ * Ensures password rotation or email updates via env vars also apply to pre-existing DBs.
+ */
+export async function syncEnvAdminUser(): Promise<void> {
+  const adminEmail = process.env.ADMIN_EMAIL?.trim().toLowerCase();
+  const adminPassword = process.env.ADMIN_PASSWORD;
+  if (!adminEmail || !adminPassword) return;
+
+  const existingByEmail = await sql`
+    SELECT id, password_hash FROM users WHERE LOWER(email) = ${adminEmail} LIMIT 1;
+  `;
+
+  if (existingByEmail.length > 0) {
+    const user = existingByEmail[0];
+    const matches = await bcrypt.compare(
+      adminPassword,
+      user.password_hash as string
+    );
+    if (!matches) {
+      const hash = await bcrypt.hash(adminPassword, 12);
+      await sql`
+        UPDATE users SET password_hash = ${hash} WHERE id = ${user.id};
+      `;
+    }
+    return;
+  }
+
+  const hash = await bcrypt.hash(adminPassword, 12);
+  const defaultAdmin = await sql`
+    SELECT id FROM users WHERE id = 'admin_nabssku' LIMIT 1;
+  `;
+
+  if (defaultAdmin.length > 0) {
+    await sql`
+      UPDATE users
+      SET email = ${adminEmail}, password_hash = ${hash}
+      WHERE id = 'admin_nabssku';
+    `;
+    return;
+  }
+
+  await sql`
+    INSERT INTO users (id, email, password_hash, name, role)
+    VALUES ('admin_nabssku', ${adminEmail}, ${hash}, 'Nabil Sahsada Suratno', 'admin')
+    ON CONFLICT (email) DO UPDATE SET password_hash = ${hash};
+  `;
 }
 
 async function _doInitDatabase() {
@@ -161,18 +211,11 @@ async function _doInitDatabase() {
       ON CONFLICT (key) DO NOTHING;
     `;
 
-    // Seed initial admin user ONLY if no users exist AND ADMIN_EMAIL + ADMIN_PASSWORD env vars are provided
-    const adminEmail = process.env.ADMIN_EMAIL?.trim().toLowerCase();
-    const adminPassword = process.env.ADMIN_PASSWORD;
-    if (adminEmail && adminPassword) {
+    // Seed initial admin user if users table is empty and env credentials are provided
+    if (process.env.ADMIN_EMAIL?.trim() && process.env.ADMIN_PASSWORD) {
       const existingUsers = await sql`SELECT id FROM users LIMIT 1;`;
       if (existingUsers.length === 0) {
-        const hash = await bcrypt.hash(adminPassword, 12);
-        await sql`
-          INSERT INTO users (id, email, password_hash, name, role)
-          VALUES ('admin_nabssku', ${adminEmail}, ${hash}, 'Nabil Sahsada Suratno', 'admin')
-          ON CONFLICT (email) DO NOTHING;
-        `;
+        await syncEnvAdminUser();
       }
     }
 
@@ -301,6 +344,7 @@ async function _doInitDatabase() {
 
     return { success: true };
   } catch (error) {
+    _initPromise = null;
     console.error('Database init error:', error);
     return { success: false, error };
   }
