@@ -1,17 +1,18 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { sql } from '@/lib/db';
+import { sql, initDatabase } from '@/lib/db';
 import bcrypt from 'bcryptjs';
 import { signAdminToken } from '@/lib/auth';
-import { cookies } from 'next/headers';
 
 export const dynamic = 'force-dynamic';
 
 export async function POST(req: NextRequest) {
   try {
+    await initDatabase();
+
     const body = await req.json();
     const { email, password } = body;
 
-    if (!email || !password) {
+    if (!email || !password || typeof email !== 'string' || typeof password !== 'string') {
       return NextResponse.json(
         { error: 'Email dan password wajib diisi' },
         { status: 400 }
@@ -20,7 +21,6 @@ export async function POST(req: NextRequest) {
 
     const trimmedEmail = email.trim().toLowerCase();
 
-    // Query user by email
     const users = await sql`
       SELECT * FROM users 
       WHERE LOWER(email) = ${trimmedEmail} 
@@ -36,8 +36,7 @@ export async function POST(req: NextRequest) {
 
     const user = users[0];
 
-    // Verify password hash
-    const isValid = await bcrypt.compare(password, user.password_hash);
+    const isValid = await bcrypt.compare(password, user.password_hash as string);
     if (!isValid) {
       return NextResponse.json(
         { error: 'Email atau password salah' },
@@ -45,28 +44,15 @@ export async function POST(req: NextRequest) {
       );
     }
 
-    // Generate JWT token
     const token = signAdminToken({
-      userId: user.id,
-      email: user.email,
-      name: user.name,
-      role: user.role || 'admin',
-    });
-
-    // Set cookie using next/headers cookies()
-    cookies().set({
-      name: 'admin_session',
-      value: token,
-      httpOnly: false, // Accessible so document/middleware can verify immediately
-      secure: process.env.NODE_ENV === 'production',
-      sameSite: 'lax',
-      path: '/',
-      maxAge: 60 * 60 * 24 * 7, // 7 days
+      userId: user.id as string,
+      email: user.email as string,
+      name: user.name as string,
+      role: (user.role as string) || 'admin',
     });
 
     const response = NextResponse.json({
       success: true,
-      token,
       user: {
         id: user.id,
         email: user.email,
@@ -75,19 +61,18 @@ export async function POST(req: NextRequest) {
       },
     });
 
-    // Also set on response object for redundancy
     response.cookies.set({
       name: 'admin_session',
       value: token,
-      httpOnly: false,
+      httpOnly: true,
       secure: process.env.NODE_ENV === 'production',
       sameSite: 'lax',
       path: '/',
-      maxAge: 60 * 60 * 24 * 7,
+      maxAge: 60 * 60 * 24 * 7, // 7 days
     });
 
     return response;
-  } catch (error: any) {
+  } catch (error) {
     console.error('Login error:', error);
     return NextResponse.json(
       { error: 'Terjadi kesalahan pada server' },

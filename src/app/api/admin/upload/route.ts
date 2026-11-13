@@ -1,13 +1,32 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { getAdminSession } from '@/lib/auth';
-import { uploadToCloudinary } from '@/lib/cloudinary';
+import { uploadToCloudinary, isCloudinaryConfigured } from '@/lib/cloudinary';
 
 export const dynamic = 'force-dynamic';
+
+const MAX_FILE_SIZE = 5 * 1024 * 1024; // 5MB
+const ALLOWED_MIME_TYPES = new Set([
+  'image/jpeg',
+  'image/png',
+  'image/webp',
+  'image/gif',
+  'image/avif',
+]);
 
 export async function POST(req: NextRequest) {
   const session = await getAdminSession();
   if (!session) {
     return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+  }
+
+  if (!isCloudinaryConfigured()) {
+    return NextResponse.json(
+      {
+        error:
+          'Cloudinary belum dikonfigurasi di server. Silakan isi env CLOUDINARY_* atau masukkan URL gambar langsung.',
+      },
+      { status: 503 }
+    );
   }
 
   try {
@@ -17,6 +36,20 @@ export async function POST(req: NextRequest) {
 
     if (!file) {
       return NextResponse.json({ error: 'File gambar wajib diunggah' }, { status: 400 });
+    }
+
+    if (!ALLOWED_MIME_TYPES.has(file.type)) {
+      return NextResponse.json(
+        { error: 'Format gambar harus JPG, PNG, WebP, GIF, atau AVIF' },
+        { status: 400 }
+      );
+    }
+
+    if (file.size > MAX_FILE_SIZE) {
+      return NextResponse.json(
+        { error: 'Ukuran gambar maksimal 5MB' },
+        { status: 400 }
+      );
     }
 
     const bytes = await file.arrayBuffer();
@@ -30,8 +63,10 @@ export async function POST(req: NextRequest) {
       public_id: result.public_id,
       format: result.format,
     });
-  } catch (error: any) {
+  } catch (error) {
     console.error('Cloudinary upload error:', error);
-    return NextResponse.json({ error: error.message || 'Gagal mengunggah gambar ke Cloudinary' }, { status: 500 });
+    const message =
+      error instanceof Error ? error.message : 'Gagal mengunggah gambar ke Cloudinary';
+    return NextResponse.json({ error: message }, { status: 500 });
   }
 }

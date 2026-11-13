@@ -1,31 +1,60 @@
 import type { Metadata } from 'next';
+import { Plus_Jakarta_Sans, Space_Grotesk, Fredoka } from 'next/font/google';
 import './globals.css';
 
+const plusJakarta = Plus_Jakarta_Sans({
+  subsets: ['latin'],
+  weight: ['400', '500', '600', '700', '800'],
+  variable: '--font-sans',
+  display: 'swap',
+});
+
+const spaceGrotesk = Space_Grotesk({
+  subsets: ['latin'],
+  weight: ['500', '700'],
+  variable: '--font-display',
+  display: 'swap',
+});
+
+const fredoka = Fredoka({
+  subsets: ['latin'],
+  weight: ['400', '500', '600', '700'],
+  variable: '--font-comic',
+  display: 'swap',
+});
+
+const siteUrl = process.env.NEXT_PUBLIC_APP_URL || 'https://nabs.vercel.app';
+
 export const metadata: Metadata = {
-  title: 'Nabil Sahsada Suratno (@nabssku) — Full-Stack Web & AI Developer',
-  description: 'Portofolio personal interaktif Nabil Sahsada Suratno bertema Cartoon Neo-Brutalism. Full-Stack Developer spesialis Next.js, Node.js, PostgreSQL, dan SaaS Solution.',
-  keywords: ['Nabil Sahsada Suratno', 'nabssku', 'Full Stack Developer Malang', 'Next.js Developer Indonesia', 'SaaS Developer', 'Portfolio Kartun'],
+  metadataBase: new URL(siteUrl),
+  title: {
+    default: 'Nabil Sahsada Suratno (@nabssku) — Full-Stack Web & AI Developer',
+    template: '%s | Nabil Sahsada (@nabssku)',
+  },
+  description:
+    'Interactive Cartoon Neo-Brutalism portfolio of Nabil Sahsada Suratno. Full-Stack Developer specializing in Next.js, Node.js, PostgreSQL, SaaS platforms, and AI agents.',
+  keywords: [
+    'Nabil Sahsada Suratno',
+    'nabssku',
+    'Full Stack Developer Malang',
+    'Next.js Developer Indonesia',
+    'SaaS Developer',
+    'AI Web Developer',
+  ],
   authors: [{ name: 'Nabil Sahsada Suratno', url: 'https://github.com/nabssku' }],
   openGraph: {
-    title: 'Nabil Sahsada Suratno — Full-Stack Web Developer',
-    description: 'Explore creative web apps, SaaS tools, and software engineering projects by Nabil (@nabssku).',
-    url: 'https://nabs.vercel.app',
+    title: 'Nabil Sahsada Suratno (@nabssku) — Full-Stack Web & AI Developer',
+    description:
+      'Explore interactive web apps, SaaS platforms, POS systems, and AI agent projects built by Nabil Sahsada Suratno.',
+    url: siteUrl,
     siteName: 'Nabssku Portfolio',
-    images: [
-      {
-        url: 'https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?w=1200&h=630&fit=crop',
-        width: 1200,
-        height: 630,
-        alt: 'Nabil Sahsada Portfolio Preview',
-      },
-    ],
     locale: 'id_ID',
     type: 'website',
   },
   twitter: {
     card: 'summary_large_image',
-    title: 'Nabil Sahsada Suratno — Full-Stack Developer',
-    description: 'Personal Portfolio & Project Showcase by @nabssku',
+    title: 'Nabil Sahsada Suratno — Full-Stack Web & AI Developer',
+    description: 'Personal Portfolio & Case Study Showcase by @nabssku',
     creator: '@nabsskun',
   },
 };
@@ -47,15 +76,19 @@ export default function RootLayout({
       addressRegion: 'Jawa Timur',
       addressCountry: 'ID',
     },
-    url: 'https://nabs.vercel.app',
+    url: siteUrl,
     sameAs: [
       'https://github.com/nabssku',
       'https://instagram.com/nabsskun',
+      'https://linkedin.com/in/nabssku',
     ],
   };
 
   return (
-    <html lang="id" className="scroll-smooth">
+    <html
+      lang="id"
+      className={`scroll-smooth ${plusJakarta.variable} ${spaceGrotesk.variable} ${fredoka.variable}`}
+    >
       <head>
         <script
           type="application/ld+json"
@@ -63,6 +96,12 @@ export default function RootLayout({
         />
       </head>
       <body className="min-h-screen bg-pop-cream text-pop-dark selection:bg-pop-yellow selection:text-black">
+        <a
+          href="#main-content"
+          className="sr-only focus:not-sr-only focus:fixed focus:top-4 focus:left-4 focus:z-50 focus:px-4 focus:py-2.5 focus:bg-pop-yellow focus:text-black focus:border-[3px] focus:border-black focus:rounded-xl focus:font-display focus:font-bold focus:shadow-pop"
+        >
+          Skip to main content
+        </a>
         {children}
       </body>
     </html>

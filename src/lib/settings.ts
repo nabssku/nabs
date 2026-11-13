@@ -1,6 +1,6 @@
 import { sql } from './db';
 import { Profile } from '@/types';
-import { PROFILE } from './profile'; // fallback
+import { PROFILE } from './profile';
 
 export async function getSiteProfile(): Promise<Profile> {
   try {
@@ -11,14 +11,16 @@ export async function getSiteProfile(): Promise<Profile> {
     }
 
     return {
-      name: map['profile_name'] ?? PROFILE.name,
-      handle: map['profile_handle'] ?? PROFILE.handle,
-      title: map['profile_title'] ?? PROFILE.title,
-      location: map['profile_location'] ?? PROFILE.location,
-      status: map['profile_status'] ?? PROFILE.status,
-      bio: map['profile_bio'] ?? PROFILE.bio,
+      name: map['profile_name'] || PROFILE.name,
+      handle: map['profile_handle'] || PROFILE.handle,
+      title: map['profile_title'] || PROFILE.title,
+      location: map['profile_location'] || PROFILE.location,
+      status: map['profile_status'] || PROFILE.status,
+      bio: map['profile_bio'] || PROFILE.bio,
       avatarUrl: map['profile_avatar_url'] ?? PROFILE.avatarUrl,
-      resumeUrl: map['profile_resume_url'] ?? PROFILE.resumeUrl,
+      resumeUrl: map['profile_resume_url'] || PROFILE.resumeUrl,
+      statYears: map['stat_years'] || PROFILE.statYears,
+      statProjects: map['stat_projects'] ?? PROFILE.statProjects,
       socials: {
         github: map['social_github'] ?? PROFILE.socials.github,
         instagram: map['social_instagram'] ?? PROFILE.socials.instagram,

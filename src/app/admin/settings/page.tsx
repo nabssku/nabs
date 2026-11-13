@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { useRouter } from 'next/navigation';
 import { Save, Loader2, Check, User, Link as LinkIcon } from 'lucide-react';
 
@@ -20,13 +20,15 @@ export default function AdminSettingsPage() {
     profile_bio: '',
     profile_avatar_url: '',
     profile_resume_url: '',
+    stat_years: '3+',
+    stat_projects: '15+',
     social_github: '',
     social_instagram: '',
     social_linkedin: '',
     social_email: '',
   });
 
-  const fetchSettings = async () => {
+  const fetchSettings = useCallback(async () => {
     setLoading(true);
     try {
       const res = await fetch('/api/admin/settings');
@@ -47,11 +49,11 @@ export default function AdminSettingsPage() {
     } finally {
       setLoading(false);
     }
-  };
+  }, [router]);
 
   useEffect(() => {
     fetchSettings();
-  }, []);
+  }, [fetchSettings]);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     const { name, value } = e.target;
@@ -104,14 +106,13 @@ export default function AdminSettingsPage() {
 
   return (
     <div className="space-y-8 max-w-4xl mx-auto pb-12">
-      {/* Header */}
       <div>
         <h1 className="text-3xl font-display font-black text-slate-900 flex items-center gap-2">
-          <span>Profile & Socials Settings</span>
+          <span>Profile &amp; Socials Settings</span>
           <span className="text-2xl">⚙️</span>
         </h1>
         <p className="text-xs sm:text-sm text-slate-600 font-medium">
-          Kelola informasi profil utama, bio, avatar, resume, dan tautan media sosial portfolio.
+          Kelola informasi profil utama, bio, avatar, metrik hero, resume, dan tautan media sosial.
         </p>
       </div>
 
@@ -132,8 +133,10 @@ export default function AdminSettingsPage() {
         {/* Main Profile Info Card */}
         <div className="p-6 sm:p-8 bg-white border-[3px] border-black rounded-3xl shadow-pop space-y-6">
           <div className="flex items-center gap-2 pb-4 border-b-[2px] border-black">
-            <User className="w-6 h-6 text-pop-purple" />
-            <h2 className="text-xl font-display font-black text-slate-900">Informasi Utama Profil</h2>
+            <User className="w-6 h-6 text-pop-purple" aria-hidden="true" />
+            <h2 className="text-xl font-display font-black text-slate-900">
+              Informasi Utama Profil
+            </h2>
           </div>
 
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
@@ -207,6 +210,34 @@ export default function AdminSettingsPage() {
               />
             </div>
 
+            <div>
+              <label className="block text-xs font-display font-black text-slate-800 uppercase tracking-wider mb-2">
+                Statistik Tahun Pengalaman
+              </label>
+              <input
+                type="text"
+                name="stat_years"
+                value={formData.stat_years}
+                onChange={handleChange}
+                placeholder="3+"
+                className="w-full px-4 py-3 bg-pop-cream border-[2px] border-black rounded-xl font-mono font-bold text-sm focus:outline-none focus:ring-2 focus:ring-pop-orange"
+              />
+            </div>
+
+            <div>
+              <label className="block text-xs font-display font-black text-slate-800 uppercase tracking-wider mb-2">
+                Statistik Proyek Selesai
+              </label>
+              <input
+                type="text"
+                name="stat_projects"
+                value={formData.stat_projects}
+                onChange={handleChange}
+                placeholder="15+ (kosongkan untuk hitung otomatis)"
+                className="w-full px-4 py-3 bg-pop-cream border-[2px] border-black rounded-xl font-mono font-bold text-sm focus:outline-none focus:ring-2 focus:ring-pop-orange"
+              />
+            </div>
+
             <div className="sm:col-span-2">
               <label className="block text-xs font-display font-black text-slate-800 uppercase tracking-wider mb-2">
                 Bio / Tentang Saya
@@ -225,14 +256,23 @@ export default function AdminSettingsPage() {
               <label className="block text-xs font-display font-black text-slate-800 uppercase tracking-wider mb-2">
                 Avatar Image URL
               </label>
-              <input
-                type="url"
-                name="profile_avatar_url"
-                value={formData.profile_avatar_url}
-                onChange={handleChange}
-                required
-                className="w-full px-4 py-3 bg-pop-cream border-[2px] border-black rounded-xl font-medium text-sm focus:outline-none focus:ring-2 focus:ring-pop-orange"
-              />
+              <div className="flex items-center gap-3">
+                {formData.profile_avatar_url && (
+                  <img
+                    src={formData.profile_avatar_url}
+                    alt="Avatar preview"
+                    className="w-11 h-11 rounded-xl border-[2px] border-black object-cover shrink-0 bg-pop-yellow"
+                  />
+                )}
+                <input
+                  type="url"
+                  name="profile_avatar_url"
+                  value={formData.profile_avatar_url}
+                  onChange={handleChange}
+                  required
+                  className="w-full px-4 py-3 bg-pop-cream border-[2px] border-black rounded-xl font-medium text-sm focus:outline-none focus:ring-2 focus:ring-pop-orange"
+                />
+              </div>
             </div>
 
             <div>
@@ -247,6 +287,9 @@ export default function AdminSettingsPage() {
                 required
                 className="w-full px-4 py-3 bg-pop-cream border-[2px] border-black rounded-xl font-medium text-sm focus:outline-none focus:ring-2 focus:ring-pop-orange"
               />
+              <p className="text-[11px] text-slate-500 mt-1">
+                Gunakan <code className="font-mono">/resume</code> untuk CV dinamis otomatis atau tempel URL PDF eksternal.
+              </p>
             </div>
           </div>
         </div>
@@ -254,8 +297,10 @@ export default function AdminSettingsPage() {
         {/* Social Links Card */}
         <div className="p-6 sm:p-8 bg-white border-[3px] border-black rounded-3xl shadow-pop space-y-6">
           <div className="flex items-center gap-2 pb-4 border-b-[2px] border-black">
-            <LinkIcon className="w-6 h-6 text-pop-green" />
-            <h2 className="text-xl font-display font-black text-slate-900">Tautan Sosial & Kontak</h2>
+            <LinkIcon className="w-6 h-6 text-pop-green" aria-hidden="true" />
+            <h2 className="text-xl font-display font-black text-slate-900">
+              Tautan Sosial &amp; Kontak
+            </h2>
           </div>
 
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">

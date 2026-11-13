@@ -26,10 +26,11 @@ module.exports = {
         'pop-xl': '8px 8px 0px 0px rgba(0,0,0,1)',
       },
       fontFamily: {
-        sans: ['Plus Jakarta Sans', 'Inter', 'sans-serif'],
-        display: ['Space Grotesk', 'Plus Jakarta Sans', 'sans-serif'],
+        sans: ['var(--font-sans)', 'Plus Jakarta Sans', 'Inter', 'sans-serif'],
+        display: ['var(--font-display)', 'Space Grotesk', 'Plus Jakarta Sans', 'sans-serif'],
+        comic: ['var(--font-comic)', 'Fredoka', 'cursive', 'sans-serif'],
       },
     },
   },
   plugins: [],
-}
+};

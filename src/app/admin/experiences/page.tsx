@@ -1,14 +1,16 @@
 'use client';
 
-import React, { useState, useEffect } from 'react';
-import { Plus, Trash2, GraduationCap, Briefcase, X, Check, Loader2 } from 'lucide-react';
+import React, { useState, useEffect, useCallback } from 'react';
+import { Plus, Trash2, Edit2, X, Check, Loader2 } from 'lucide-react';
 import { useRouter } from 'next/navigation';
+import { Experience } from '@/types';
 
 export default function AdminExperiencesPage() {
   const router = useRouter();
-  const [experiences, setExperiences] = useState<any[]>([]);
+  const [experiences, setExperiences] = useState<Experience[]>([]);
   const [loading, setLoading] = useState(true);
   const [modalOpen, setModalOpen] = useState(false);
+  const [editingExp, setEditingExp] = useState<Experience | null>(null);
 
   const [title, setTitle] = useState('');
   const [institution, setInstitution] = useState('');
@@ -20,11 +22,11 @@ export default function AdminExperiencesPage() {
   const [sortOrder, setSortOrder] = useState(0);
   const [saving, setSaving] = useState(false);
 
-  const fetchExperiences = async () => {
+  const fetchExperiences = useCallback(async () => {
     try {
       const res = await fetch('/api/admin/experiences');
       if (res.status === 401) {
-        router.replace('/');
+        router.replace('/admin/login');
         return;
       }
       const data = await res.json();
@@ -41,20 +43,56 @@ export default function AdminExperiencesPage() {
     } finally {
       setLoading(false);
     }
-  };
+  }, [router]);
 
   useEffect(() => {
     fetchExperiences();
-  }, []);
+  }, [fetchExperiences]);
+
+  useEffect(() => {
+    if (!modalOpen) return;
+    const onKeyDown = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') setModalOpen(false);
+    };
+    window.addEventListener('keydown', onKeyDown);
+    return () => window.removeEventListener('keydown', onKeyDown);
+  }, [modalOpen]);
+
+  const openCreateModal = () => {
+    setEditingExp(null);
+    setTitle('');
+    setInstitution('');
+    setLocation('');
+    setStartYear('');
+    setEndYear('Sekarang');
+    setDescription('');
+    setType('education');
+    setSortOrder(0);
+    setModalOpen(true);
+  };
+
+  const openEditModal = (item: Experience) => {
+    setEditingExp(item);
+    setTitle(item.title);
+    setInstitution(item.institution);
+    setLocation(item.location || '');
+    setStartYear(item.start_year);
+    setEndYear(item.end_year || 'Sekarang');
+    setDescription(item.description || '');
+    setType(item.type || 'work');
+    setSortOrder(item.sort_order || 0);
+    setModalOpen(true);
+  };
 
   const handleSave = async (e: React.FormEvent) => {
     e.preventDefault();
     setSaving(true);
     try {
       const res = await fetch('/api/admin/experiences', {
-        method: 'POST',
+        method: editingExp ? 'PUT' : 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
+          ...(editingExp ? { id: editingExp.id } : {}),
           title,
           institution,
           location,
@@ -66,29 +104,28 @@ export default function AdminExperiencesPage() {
         }),
       });
       if (res.status === 401) {
-        router.replace('/');
+        router.replace('/admin/login');
         return;
       }
-      setTitle('');
-      setInstitution('');
-      setLocation('');
-      setDescription('');
+      if (!res.ok) {
+        const data = await res.json().catch(() => ({}));
+        throw new Error(data.error || 'Gagal menyimpan riwayat');
+      }
       setModalOpen(false);
       fetchExperiences();
     } catch (err) {
-      console.error(err);
-      alert('Gagal menambah riwayat');
+      alert(err instanceof Error ? err.message : 'Gagal menyimpan riwayat');
     } finally {
       setSaving(false);
     }
   };
 
-  const handleDelete = async (id: string) => {
+  const handleDelete = async (id: string | number) => {
     if (!confirm('Hapus riwayat ini?')) return;
     try {
       const res = await fetch(`/api/admin/experiences?id=${id}`, { method: 'DELETE' });
       if (res.status === 401) {
-        router.replace('/');
+        router.replace('/admin/login');
         return;
       }
       fetchExperiences();
@@ -96,8 +133,6 @@ export default function AdminExperiencesPage() {
       console.error(err);
     }
   };
-
-  const safeExperiences = Array.isArray(experiences) ? experiences : [];
 
   return (
     <div className="space-y-8">
@@ -105,7 +140,7 @@ export default function AdminExperiencesPage() {
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
           <h1 className="text-3xl font-display font-black text-slate-900">
-            Education & Career Timeline 🗺️
+            Education &amp; Career Timeline 🗺️
           </h1>
           <p className="text-xs sm:text-sm text-slate-600 font-medium">
             Kelola riwayat pendidikan formal dan pengalaman kerja/freelance.
@@ -113,10 +148,11 @@ export default function AdminExperiencesPage() {
         </div>
 
         <button
-          onClick={() => setModalOpen(true)}
+          type="button"
+          onClick={openCreateModal}
           className="px-4 py-2.5 bg-pop-green border-[2px] border-black rounded-xl font-display font-bold text-xs shadow-pop-sm hover:translate-x-[1px] hover:translate-y-[1px] transition flex items-center gap-1.5 cursor-pointer"
         >
-          <Plus className="w-4 h-4" />
+          <Plus className="w-4 h-4" aria-hidden="true" />
           <span>Tambah Timeline Baru</span>
         </button>
       </div>
@@ -126,20 +162,24 @@ export default function AdminExperiencesPage() {
         <div className="flex items-center justify-center py-20">
           <Loader2 className="w-8 h-8 animate-spin text-black" />
         </div>
-      ) : safeExperiences.length === 0 ? (
-        <div className="text-center py-16 bg-white border-[3px] border-black rounded-3xl shadow-pop text-slate-400 font-bold text-sm">
+      ) : experiences.length === 0 ? (
+        <div className="text-center py-16 bg-white border-[3px] border-black rounded-3xl shadow-pop text-slate-500 font-bold text-sm">
           Belum ada data timeline.
         </div>
       ) : (
         <div className="space-y-4">
-          {safeExperiences.map((item) => (
+          {experiences.map((item) => (
             <div
               key={item.id}
               className="bg-white border-[3px] border-black rounded-3xl p-6 shadow-pop flex flex-col sm:flex-row sm:items-center justify-between gap-4"
             >
               <div className="space-y-1">
-                <div className="flex items-center gap-2">
-                  <span className={`px-2.5 py-0.5 rounded-lg border-[2px] border-black font-display font-bold text-[10px] uppercase ${item.type === 'education' ? 'bg-pop-yellow' : 'bg-pop-green'}`}>
+                <div className="flex items-center gap-2 flex-wrap">
+                  <span
+                    className={`px-2.5 py-0.5 rounded-lg border-[2px] border-black font-display font-bold text-[10px] uppercase ${
+                      item.type === 'education' ? 'bg-pop-yellow' : 'bg-pop-green'
+                    }`}
+                  >
                     {item.type}
                   </span>
                   <h3 className="font-display font-bold text-base text-slate-900">
@@ -147,7 +187,9 @@ export default function AdminExperiencesPage() {
                   </h3>
                 </div>
                 <div className="text-xs font-semibold text-slate-500 flex items-center gap-2">
-                  <span>{item.start_year} - {item.end_year}</span>
+                  <span>
+                    {item.start_year} - {item.end_year}
+                  </span>
                   {item.location && <span>• {item.location}</span>}
                 </div>
                 <p className="text-xs sm:text-sm text-slate-700 font-medium pt-1">
@@ -155,13 +197,26 @@ export default function AdminExperiencesPage() {
                 </p>
               </div>
 
-              <button
-                onClick={() => handleDelete(item.id)}
-                className="self-end sm:self-center p-2.5 bg-rose-100 border-[2px] border-black rounded-xl shadow-pop-sm hover:bg-rose-200 text-rose-700 transition cursor-pointer"
-                title="Hapus"
-              >
-                <Trash2 className="w-4 h-4" />
-              </button>
+              <div className="flex items-center gap-2 self-end sm:self-center shrink-0">
+                <button
+                  type="button"
+                  onClick={() => openEditModal(item)}
+                  className="p-2.5 bg-pop-yellow border-[2px] border-black rounded-xl shadow-pop-sm hover:bg-pop-yellow/80 transition cursor-pointer"
+                  title="Edit"
+                  aria-label={`Edit ${item.title}`}
+                >
+                  <Edit2 className="w-4 h-4" />
+                </button>
+                <button
+                  type="button"
+                  onClick={() => handleDelete(item.id)}
+                  className="p-2.5 bg-rose-100 border-[2px] border-black rounded-xl shadow-pop-sm hover:bg-rose-200 text-rose-700 transition cursor-pointer"
+                  title="Hapus"
+                  aria-label={`Hapus ${item.title}`}
+                >
+                  <Trash2 className="w-4 h-4" />
+                </button>
+              </div>
             </div>
           ))}
         </div>
@@ -169,13 +224,25 @@ export default function AdminExperiencesPage() {
 
       {/* Modal */}
       {modalOpen && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-xs">
-          <div className="bg-white border-[4px] border-black rounded-3xl w-full max-w-lg shadow-pop-xl overflow-hidden">
+        <div
+          role="dialog"
+          aria-modal="true"
+          onClick={() => setModalOpen(false)}
+          className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm"
+        >
+          <div
+            onClick={(e) => e.stopPropagation()}
+            className="bg-white border-[4px] border-black rounded-3xl w-full max-w-lg shadow-pop-xl overflow-hidden"
+          >
             <div className="bg-pop-green border-b-[3px] border-black p-4 flex items-center justify-between">
-              <h3 className="font-display font-black text-base">Tambah Timeline Riwayat</h3>
+              <h3 className="font-display font-black text-base">
+                {editingExp ? 'Edit Timeline Riwayat' : 'Tambah Timeline Riwayat'}
+              </h3>
               <button
+                type="button"
                 onClick={() => setModalOpen(false)}
-                className="w-8 h-8 bg-white border-[2px] border-black rounded-xl flex items-center justify-center font-bold"
+                aria-label="Tutup modal"
+                className="w-9 h-9 bg-white border-[2px] border-black rounded-xl flex items-center justify-center font-bold cursor-pointer"
               >
                 <X className="w-4 h-4" />
               </button>
@@ -218,7 +285,9 @@ export default function AdminExperiencesPage() {
               </div>
 
               <div>
-                <label className="block font-bold text-slate-700 mb-1">Institusi / Instansi / Brand *</label>
+                <label className="block font-bold text-slate-700 mb-1">
+                  Institusi / Instansi / Brand *
+                </label>
                 <input
                   type="text"
                   required
@@ -279,16 +348,20 @@ export default function AdminExperiencesPage() {
                 <button
                   type="button"
                   onClick={() => setModalOpen(false)}
-                  className="px-4 py-2 bg-white border-[2px] border-black rounded-xl font-bold"
+                  className="px-4 py-2 bg-white border-[2px] border-black rounded-xl font-bold cursor-pointer"
                 >
                   Batal
                 </button>
                 <button
                   type="submit"
                   disabled={saving}
-                  className="px-5 py-2 bg-pop-green border-[2px] border-black rounded-xl font-bold shadow-pop-sm flex items-center gap-1.5"
+                  className="px-5 py-2 bg-pop-green border-[2px] border-black rounded-xl font-bold shadow-pop-sm flex items-center gap-1.5 cursor-pointer"
                 >
-                  {saving ? <Loader2 className="w-4 h-4 animate-spin" /> : <Check className="w-4 h-4" />}
+                  {saving ? (
+                    <Loader2 className="w-4 h-4 animate-spin" />
+                  ) : (
+                    <Check className="w-4 h-4" />
+                  )}
                   <span>Simpan</span>
                 </button>
               </div>

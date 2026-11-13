@@ -1,8 +1,37 @@
-import { neon } from '@neondatabase/serverless';
+import { neon, NeonQueryFunction } from '@neondatabase/serverless';
+import bcrypt from 'bcryptjs';
 
-const connectionString = process.env.DATABASE_URL || 'postgresql://neondb_owner:npg_DPikGA6XONT2@ep-misty-violet-avt0zwb0-pooler.c-11.us-east-1.aws.neon.tech/neondb?channel_binding=require&sslmode=require';
+let _sqlClient: NeonQueryFunction<false, false> | null = null;
 
-export const sql = neon(connectionString);
+function getSqlClient(): NeonQueryFunction<false, false> {
+  if (!_sqlClient) {
+    const connectionString = process.env.DATABASE_URL;
+    if (!connectionString) {
+      throw new Error(
+        'DATABASE_URL environment variable is not configured. Please set it in .env.local or your deployment settings.'
+      );
+    }
+    _sqlClient = neon(connectionString);
+  }
+  return _sqlClient;
+}
+
+/**
+ * Lazy Neon SQL client so module imports during build do not fail when env vars are absent.
+ */
+export const sql: NeonQueryFunction<false, false> = new Proxy(
+  (() => {}) as unknown as NeonQueryFunction<false, false>,
+  {
+    apply(_target, thisArg, argArray) {
+      return Reflect.apply(getSqlClient() as unknown as Function, thisArg, argArray);
+    },
+    get(_target, prop, receiver) {
+      const client = getSqlClient();
+      const value = Reflect.get(client, prop, receiver);
+      return typeof value === 'function' ? value.bind(client) : value;
+    },
+  }
+);
 
 /**
  * Initialize all database tables and seed default portfolio data.
@@ -46,6 +75,9 @@ async function _doInitDatabase() {
         thumbnail_url VARCHAR(500) NOT NULL,
         cloudinary_public_id VARCHAR(255) DEFAULT '',
         category VARCHAR(100) DEFAULT 'Web App',
+        tech_stack TEXT DEFAULT '',
+        role VARCHAR(150) DEFAULT '',
+        year VARCHAR(20) DEFAULT '',
         demo_url VARCHAR(500),
         repo_url VARCHAR(500),
         is_featured BOOLEAN DEFAULT FALSE,
@@ -55,6 +87,11 @@ async function _doInitDatabase() {
         updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
       );
     `;
+
+    // Safe additive migrations for existing tables
+    await sql`ALTER TABLE projects ADD COLUMN IF NOT EXISTS tech_stack TEXT DEFAULT '';`;
+    await sql`ALTER TABLE projects ADD COLUMN IF NOT EXISTS role VARCHAR(150) DEFAULT '';`;
+    await sql`ALTER TABLE projects ADD COLUMN IF NOT EXISTS year VARCHAR(20) DEFAULT '';`;
 
     // 3. Skills Table
     await sql`
@@ -111,10 +148,12 @@ async function _doInitDatabase() {
         ('profile_handle', '@nabssku'),
         ('profile_title', 'Full-Stack Web & AI Developer'),
         ('profile_location', 'Malang, Jawa Timur, Indonesia'),
-        ('profile_status', '🟢 Available for Freelance & Full-time'),
+        ('profile_status', 'Available for Freelance & Full-time'),
         ('profile_bio', 'Informatics Engineering student at UMM & Freelance Full-Stack Developer. I craft playful, high-performance web apps, SaaS platforms, and intelligent agent systems with clean code and comic-inspired aesthetics.'),
         ('profile_avatar_url', 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=500&auto=format&fit=crop&q=80'),
-        ('profile_resume_url', '/resume_nabil.pdf'),
+        ('profile_resume_url', '/resume'),
+        ('stat_years', '3+'),
+        ('stat_projects', '15+'),
         ('social_github', 'https://github.com/nabssku'),
         ('social_instagram', 'https://instagram.com/nabsskun'),
         ('social_linkedin', 'https://linkedin.com/in/nabssku'),
@@ -122,31 +161,38 @@ async function _doInitDatabase() {
       ON CONFLICT (key) DO NOTHING;
     `;
 
-    // Check if admin user exists, if not seed it
-    const existingUsers = await sql`SELECT id FROM users WHERE email = 'nabilsahsadabisnis@gmail.com' LIMIT 1;`;
-    if (existingUsers.length === 0) {
-      const defaultHash = '$2b$10$JAX.nGEfQEdLNK0Lb7ZT/.eUT5TXqAzya4LoQLuZEgftWnedOaOFW'; // admin123456
-      await sql`
-        INSERT INTO users (id, email, password_hash, name, role)
-        VALUES ('admin_nabssku', 'nabilsahsadabisnis@gmail.com', ${defaultHash}, 'Nabil Sahsada Suratno', 'admin')
-        ON CONFLICT (email) DO UPDATE SET password_hash = ${defaultHash};
-      `;
+    // Seed initial admin user ONLY if no users exist AND ADMIN_EMAIL + ADMIN_PASSWORD env vars are provided
+    const adminEmail = process.env.ADMIN_EMAIL?.trim().toLowerCase();
+    const adminPassword = process.env.ADMIN_PASSWORD;
+    if (adminEmail && adminPassword) {
+      const existingUsers = await sql`SELECT id FROM users LIMIT 1;`;
+      if (existingUsers.length === 0) {
+        const hash = await bcrypt.hash(adminPassword, 12);
+        await sql`
+          INSERT INTO users (id, email, password_hash, name, role)
+          VALUES ('admin_nabssku', ${adminEmail}, ${hash}, 'Nabil Sahsada Suratno', 'admin')
+          ON CONFLICT (email) DO NOTHING;
+        `;
+      }
     }
 
     // Seed default projects if empty
     const existingProjects = await sql`SELECT id FROM projects LIMIT 1;`;
     if (existingProjects.length === 0) {
       await sql`
-        INSERT INTO projects (id, title, slug, summary, content_markdown, thumbnail_url, category, demo_url, repo_url, is_featured, is_published, sort_order)
+        INSERT INTO projects (id, title, slug, summary, content_markdown, thumbnail_url, category, tech_stack, role, year, demo_url, repo_url, is_featured, is_published, sort_order)
         VALUES 
         (
           'proj_seed_001',
           'Alacart — Smart POS & Cashier System',
           'alacart-pos',
           'Sistem kasir multi-outlet berbasis web responsif dengan integrasi QRIS dynamic dan laporan keuangan real-time.',
-          '## Tentang Alacart POS\n\nAlacart adalah aplikasi point-of-sale modern untuk UMKM F&B dan retail. Dilengkapi fitur manajemen stok bahan baku, split bill meja, pencetakan nota thermal via Bluetooth, dan integrasi QRIS BorderPay.\n\n### Teknologi:\n- Next.js 14 App Router\n- Tailwind CSS & Framer Motion\n- Neon Serverless PostgreSQL\n- BorderPay API Gateway',
+          '## Tentang Alacart POS\n\nAlacart adalah aplikasi point-of-sale modern untuk UMKM F&B dan retail. Dilengkapi fitur manajemen stok bahan baku, split bill meja, pencetakan nota thermal via Bluetooth, dan integrasi QRIS BorderPay.\n\n### Teknologi & Highlight:\n- **Next.js 14 App Router** untuk performa UI responsif\n- **Tailwind CSS & Framer Motion** untuk transisi kasir cepat\n- **Neon Serverless PostgreSQL** untuk pencatatan transaksi real-time\n- **BorderPay API Gateway** untuk pembayaran QRIS dinamis',
           'https://images.unsplash.com/photo-1556742049-0a67e5572263?q=80&w=800&auto=format&fit=crop',
           'SaaS / POS',
+          'Next.js, TypeScript, Tailwind CSS, PostgreSQL, BorderPay QRIS',
+          'Full-Stack Developer',
+          '2025',
           'https://alacart.vercel.app',
           'https://github.com/nabssku/alacart',
           true,
@@ -158,9 +204,12 @@ async function _doInitDatabase() {
           'Selasar Wonosalam — Eco Tourism Portal',
           'selasar-wonosalam',
           'Platform informasi destinasi ekowisata, reservasi villa, dan pusat oleh-oleh khas Wonosalam berbasis Next.js.',
-          '## Portal Ekowisata Wonosalam\n\nSistem direktori wisata terintegrasi dengan peta interaktif, kalender musim panen durian, serta sistem booking penginapan mandiri.',
+          '## Portal Ekowisata Wonosalam\n\nSistem direktori wisata terintegrasi dengan peta interaktif, kalender musim panen durian, serta sistem booking penginapan mandiri.\n\n### Fitur Utama:\n- Eksplorasi rute & destinasi lokal Wonosalam\n- Kalender event & musim panen komoditas daerah\n- Sistem reservasi villa & katalog oleh-oleh UMKM',
           'https://images.unsplash.com/photo-1469854523086-cc02fe5d8800?q=80&w=800&auto=format&fit=crop',
           'Web App',
+          'Next.js, React, Tailwind CSS, Neon DB',
+          'Lead Web Developer',
+          '2024',
           'https://selasar-wonosalam.vercel.app',
           'https://github.com/nabssku/selasar-wonosalam',
           true,
@@ -171,10 +220,13 @@ async function _doInitDatabase() {
           'proj_seed_003',
           'AUinAja — AI Fanfiction & Chat Mockup SaaS',
           'auinaja-generator',
-          'Generator mockup chat WhatsApp, X/Twitter, and Instagram interaktif untuk kreator Alternate Universe (AU).',
-          '## AUinAja Platform\n\nPlatform visual storytelling untuk kreator AU di Twitter dan TikTok dengan ekspor gambar 4K lossless dan character vault.',
+          'Generator mockup chat WhatsApp, X/Twitter, dan Instagram interaktif untuk kreator Alternate Universe (AU).',
+          '## AUinAja Platform\n\nPlatform visual storytelling untuk kreator AU di X dan TikTok dengan ekspor gambar resolusi tinggi dan character vault.\n\n### Kapabilitas:\n- Editor percakapan multi-platform (WhatsApp, X, Instagram)\n- Character Vault untuk konsistensi profil karakter\n- Ekspor gambar tajam siap unggah ke media sosial',
           'https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?q=80&w=800&auto=format&fit=crop',
           'SaaS',
+          'Next.js, TypeScript, Canvas Export, PostgreSQL',
+          'Creator & Full-Stack Engineer',
+          '2025',
           'https://auinaja.vercel.app',
           'https://github.com/nabssku/auinaja',
           true,
@@ -190,7 +242,7 @@ async function _doInitDatabase() {
       await sql`
         INSERT INTO skills (id, name, category, proficiency_level)
         VALUES
-        ('sk_seed_01', 'React & Next.js 15', 'frontend', 95),
+        ('sk_seed_01', 'React & Next.js', 'frontend', 95),
         ('sk_seed_02', 'TypeScript', 'frontend', 90),
         ('sk_seed_03', 'Tailwind CSS', 'frontend', 95),
         ('sk_seed_04', 'Framer Motion', 'frontend', 85),

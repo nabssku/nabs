@@ -7,6 +7,9 @@ export interface Project {
   thumbnail_url: string;
   cloudinary_public_id?: string;
   category: string;
+  tech_stack?: string;
+  role?: string;
+  year?: string;
   demo_url?: string;
   repo_url?: string;
   is_featured?: boolean;
@@ -54,6 +57,8 @@ export interface Profile {
   bio: string;
   avatarUrl: string;
   resumeUrl: string;
+  statYears?: string;
+  statProjects?: string;
   socials: {
     github: string;
     instagram: string;

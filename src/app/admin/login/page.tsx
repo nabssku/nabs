@@ -25,12 +25,7 @@ export default function AdminLoginPage() {
       const data = await res.json();
       if (!res.ok) throw new Error(data.error || 'Login gagal');
 
-      // Set cookie client-side as backup
-      if (data.token) {
-        document.cookie = `admin_session=${data.token}; path=/; max-age=604800; SameSite=Lax;`;
-      }
-
-      // Hard redirect to admin dashboard to ensure fresh cookie propagation
+      // Hard redirect so HttpOnly cookie is sent on next request
       window.location.href = '/admin';
     } catch (err: unknown) {
       if (err instanceof Error) {
@@ -45,8 +40,6 @@ export default function AdminLoginPage() {
   return (
     <div className="min-h-screen bg-pop-cream bg-halftone flex flex-col items-center justify-center p-4 font-sans">
       <div className="w-full max-w-md bg-white border-[4px] border-black rounded-3xl p-6 sm:p-8 shadow-pop-xl space-y-6">
-        
-        {/* Header */}
         <div className="text-center space-y-2">
           <div className="w-14 h-14 mx-auto bg-pop-yellow border-[3px] border-black rounded-2xl flex items-center justify-center shadow-pop text-2xl font-black">
             🔐
@@ -60,59 +53,72 @@ export default function AdminLoginPage() {
         </div>
 
         {errorMsg && (
-          <div className="p-3.5 bg-rose-100 border-[2px] border-black rounded-2xl text-xs font-bold text-rose-900 shadow-pop-sm">
+          <div
+            role="alert"
+            className="p-3.5 bg-rose-100 border-[2px] border-black rounded-2xl text-xs font-bold text-rose-900 shadow-pop-sm"
+          >
             {errorMsg}
           </div>
         )}
 
         <form onSubmit={handleLogin} className="space-y-4">
           <div>
-            <label className="block text-xs font-display font-bold uppercase tracking-wider text-slate-700 mb-1.5">
+            <label
+              htmlFor="admin-email"
+              className="block text-xs font-display font-bold uppercase tracking-wider text-slate-700 mb-1.5"
+            >
               Email Admin
             </label>
             <div className="relative">
               <input
+                id="admin-email"
                 type="email"
                 required
+                autoComplete="email"
                 placeholder="admin@example.com"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 className="w-full px-4 py-3 pl-10 bg-pop-cream border-[2px] border-black rounded-2xl text-sm font-medium focus:outline-none focus:ring-2 focus:ring-pop-yellow shadow-pop-sm"
               />
-              <Mail className="w-4 h-4 text-slate-500 absolute left-3.5 top-3.5" />
+              <Mail className="w-4 h-4 text-slate-500 absolute left-3.5 top-3.5" aria-hidden="true" />
             </div>
           </div>
 
           <div>
-            <label className="block text-xs font-display font-bold uppercase tracking-wider text-slate-700 mb-1.5">
+            <label
+              htmlFor="admin-password"
+              className="block text-xs font-display font-bold uppercase tracking-wider text-slate-700 mb-1.5"
+            >
               Password
             </label>
             <div className="relative">
               <input
+                id="admin-password"
                 type="password"
                 required
+                autoComplete="current-password"
                 placeholder="••••••••"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
                 className="w-full px-4 py-3 pl-10 bg-pop-cream border-[2px] border-black rounded-2xl text-sm font-medium focus:outline-none focus:ring-2 focus:ring-pop-yellow shadow-pop-sm"
               />
-              <Key className="w-4 h-4 text-slate-500 absolute left-3.5 top-3.5" />
+              <Key className="w-4 h-4 text-slate-500 absolute left-3.5 top-3.5" aria-hidden="true" />
             </div>
           </div>
 
           <button
             type="submit"
             disabled={loading}
-            className="w-full py-3.5 bg-pop-yellow hover:bg-pop-yellow/90 text-black border-[3px] border-black rounded-2xl font-display font-black text-sm shadow-pop hover:translate-x-[2px] hover:translate-y-[2px] hover:shadow-pop-sm transition flex items-center justify-center gap-2 cursor-pointer"
+            className="w-full py-3.5 bg-pop-yellow hover:bg-pop-yellow/90 text-black border-[3px] border-black rounded-2xl font-display font-black text-sm shadow-pop hover:translate-x-[2px] hover:translate-y-[2px] hover:shadow-pop-sm transition flex items-center justify-center gap-2 cursor-pointer disabled:opacity-60"
           >
             {loading ? (
               <>
-                <Loader2 className="w-4 h-4 animate-spin" /> Memverifikasi...
+                <Loader2 className="w-4 h-4 animate-spin" aria-hidden="true" /> Memverifikasi...
               </>
             ) : (
               <>
                 <span>Masuk Dashboard</span>
-                <ArrowRight className="w-4 h-4" />
+                <ArrowRight className="w-4 h-4" aria-hidden="true" />
               </>
             )}
           </button>
@@ -121,12 +127,11 @@ export default function AdminLoginPage() {
         <div className="pt-2 text-center">
           <Link
             href="/"
-            className="text-xs font-display font-bold text-slate-500 hover:text-black transition inline-flex items-center gap-1"
+            className="text-xs font-display font-bold text-slate-600 hover:text-black transition inline-flex items-center gap-1"
           >
             ← Kembali ke Halaman Utama
           </Link>
         </div>
-
       </div>
     </div>
   );

@@ -1,21 +1,24 @@
 import { NextResponse } from 'next/server';
 import type { NextRequest } from 'next/server';
+import { verifyAdminTokenEdge } from '@/lib/jwt-edge';
 
-export function middleware(req: NextRequest) {
+export async function middleware(req: NextRequest) {
   const { pathname } = req.nextUrl;
 
-  // Check if accessing admin routes
   if (pathname.startsWith('/admin')) {
-    // Allow login page
+    const token = req.cookies.get('admin_session')?.value;
+    const isValid = token ? await verifyAdminTokenEdge(token) : false;
+
     if (pathname === '/admin/login') {
+      if (isValid) {
+        return NextResponse.redirect(new URL('/admin', req.url));
+      }
       return NextResponse.next();
     }
 
-    // Check admin session cookie
-    const token = req.cookies.get('admin_session')?.value;
-    if (!token) {
-      // Throw back to landing page if not logged in
-      return NextResponse.redirect(new URL('/', req.url));
+    if (!isValid) {
+      const loginUrl = new URL('/admin/login', req.url);
+      return NextResponse.redirect(loginUrl);
     }
   }
 

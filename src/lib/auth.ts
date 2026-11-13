@@ -1,7 +1,15 @@
 import jwt from 'jsonwebtoken';
 import { cookies } from 'next/headers';
 
-const JWT_SECRET = process.env.JWT_SECRET || 'nabssku_super_secret_jwt_key_2026_q2_malang';
+function getJwtSecret(): string {
+  const secret = process.env.JWT_SECRET;
+  if (!secret || secret.length < 16) {
+    throw new Error(
+      'JWT_SECRET environment variable is missing or too short (minimum 16 characters).'
+    );
+  }
+  return secret;
+}
 
 export interface AdminPayload {
   userId?: string;
@@ -12,13 +20,13 @@ export interface AdminPayload {
 }
 
 export function signAdminToken(payload: AdminPayload): string {
-  return jwt.sign(payload, JWT_SECRET, { expiresIn: '7d' });
+  return jwt.sign(payload, getJwtSecret(), { expiresIn: '7d' });
 }
 
 export function verifyAdminToken(token: string): AdminPayload | null {
   try {
-    return jwt.verify(token, JWT_SECRET) as AdminPayload;
-  } catch (error) {
+    return jwt.verify(token, getJwtSecret()) as AdminPayload;
+  } catch {
     return null;
   }
 }
@@ -30,7 +38,7 @@ export async function getAdminSession(): Promise<AdminPayload | null> {
     if (!token) return null;
 
     return verifyAdminToken(token);
-  } catch (error) {
+  } catch {
     return null;
   }
 }
